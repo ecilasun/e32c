@@ -44,7 +44,7 @@ fetchoutfifo FetchUnitOut(
 	.rd_en(fetchre),
 	.valid(fetchvalid),
 	.clk(aclk),
-	.srst(~aresetn) );
+	.rst(~aresetn) );
 
 // ----------------------------------------------------------------------------
 // Main state machine
@@ -99,13 +99,9 @@ always_ff @(posedge aclk) begin
 					PC <= PC + 32'd4;
 
 					case (axi4if.rdata[6:0])
-						`opcode_branch,
-						`opcode_jal,
-						`opcode_jalr,
-						`opcode_load,
-						`opcode_float_ldw,
-						`opcode_store,
-						`opcode_float_stw: begin
+						`opcode_branch, `opcode_jal, `opcode_jalr,
+						`opcode_load, `opcode_float_ldw,
+						`opcode_store, `opcode_float_stw: begin
 							// Will need to stall now, since we need to calculate next PC
 							// or LOAD/STORE data which would clash with memory activity in this unit
 							// NOTE: Due to the nature of AXI4Lite, might not need to stall for STORE

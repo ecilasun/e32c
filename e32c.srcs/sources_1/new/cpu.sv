@@ -174,10 +174,10 @@ always_comb begin
 	end else begin
 		// Branch detection and setup
 		case (opcode)
-			default /*`opcode_lui, `opcode_auipc*/: immed = {fetchdout[31:12], 12'd0};
-			`opcode_float_stw, `opcode_store: immed = {{21{fetchdout[31]}}, fetchdout[30:25], fetchdout[11:7]};
-			`opcode_op_imm, `opcode_float_ldw, `opcode_load, `opcode_jalr: immed = {{21{fetchdout[31]}}, fetchdout[30:20]};
-			`opcode_jal: immed = {{12{fetchdout[31]}}, fetchdout[19:12], fetchdout[20], fetchdout[30:21], 1'b0};
+			`opcode_lui, `opcode_auipc: begin immed = {fetchdout[31:12], 12'd0}; bluop = `blu_none; end
+			`opcode_float_stw, `opcode_store: begin immed = {{21{fetchdout[31]}}, fetchdout[30:25], fetchdout[11:7]}; bluop = `blu_none; end
+			`opcode_op_imm, `opcode_float_ldw, `opcode_load, `opcode_jalr: begin immed = {{21{fetchdout[31]}}, fetchdout[30:20]}; bluop = `blu_none; end
+			`opcode_jal: begin immed = {{12{fetchdout[31]}}, fetchdout[19:12], fetchdout[20], fetchdout[30:21], 1'b0}; bluop = `blu_none; end
 			`opcode_branch: begin
 				immed = {{20{fetchdout[31]}}, fetchdout[7], fetchdout[30:25], fetchdout[11:8], 1'b0};
 				case (fetchdout[14:12])
@@ -190,7 +190,8 @@ always_comb begin
 					default /*3'b011, 3'b010*/: bluop = `blu_none;
 				endcase
 			end
-			`opcode_system: immed = {27'd0, fetchdout[19:15]};
+			`opcode_system: begin immed = {27'd0, fetchdout[19:15]}; bluop = `blu_none; end
+			default: begin immed = 32'd0; bluop = `blu_none; end
 		endcase
 	end
 end
@@ -235,6 +236,9 @@ always_comb begin
 			end
 			`opcode_jalr: begin
 				aluop = `alu_add;
+			end
+			default: begin
+				aluop = `alu_none;
 			end
 		endcase
 	end
@@ -377,12 +381,8 @@ always @(posedge aclk) begin
 				// Execute
 				case (opcode)
 					`opcode_lui: rdin <= immed;
-					`opcode_jal,
-					`opcode_jalr,
-					`opcode_branch: rdin <= PC + 32'd4;
-					`opcode_op,
-					`opcode_op_imm,
-					`opcode_auipc: rdin <= /*mwrite ? mout :*/ aluout;
+					`opcode_jal, `opcode_jalr, `opcode_branch: rdin <= PC + 32'd4;
+					`opcode_op, `opcode_op_imm, `opcode_auipc: rdin <= /*mwrite ? mout :*/ aluout;
 					/*`opcode_system: rdin <= csrval; // TODO: more here
 					*/
 				endcase
