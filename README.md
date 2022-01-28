@@ -45,6 +45,11 @@ the COM port your FPGA board is connected to, and set it to 115200 baud, 8 bits,
 
 Default output assumes a terminal window width of 80 columns.
 
+To update or see the ROM contents, please head over to the riscvtool repository at https://github.com/ecilasun/riscvtool
+which has a folder named e32c, with a subfolder called 'BOOT' which contains the ROM image code. It is
+probably worth noting that to be able to build the code, you'll need a Linux operating system. This will
+be updated in the future to support Windows builds to make life easier for the majority.
+
 # TODO
 The plan is to gradually bring back all the features of E32B into E32C, changing the architecture as needed
 to either keep or expand upon the pipelined operation.
