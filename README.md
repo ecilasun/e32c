@@ -36,11 +36,20 @@ operations.
 EXECUTE unit can be further decoupled from the FETCH unit by changing the FETCH unit's FIFO to a dual-clock
 version, in which case the EXECUTE unit can be set to a faster clock speed as required.
 
+# ROM
+Default ROM image comes with Bruno Levy's port of tinyraytracer: https://github.com/ssloy/tinyraytracer
+It is compiled with RV32I instruction set and does not use any multipliers/dividers/FPU.
+
+To see the output, you'll need to attach a terminal software capable of interpreting RGB color codes to
+the COM port your FPGA board is connected to, and set it to 115200 baud, 8 bits, 1stop bit, no parity.
+
+Default output assumes a terminal window width of 80 columns.
+
 # TODO
 The plan is to gradually bring back all the features of E32B into E32C, changing the architecture as needed
 to either keep or expand upon the pipelined operation.
 
 # FPGA board used in the design
 The system is developed on a Nexys Video board with an A7-200T but since the first versions' current resource
-utilization is so small (1252 LUTs + 631 FFs), and doesn't depend on anything except three FPGA pins (one for
+utilization is so small (1230 LUTs + 631 FFs), and doesn't depend on anything except three FPGA pins (one for
 clock, two for UART), it should happily run on any smaller FPGA.

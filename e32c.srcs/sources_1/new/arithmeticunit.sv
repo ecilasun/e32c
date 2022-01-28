@@ -28,7 +28,7 @@ always_comb begin
 	if (enable) begin
 		case (1'b1)
 			// integer ops
-			aluonehot[9]: aluout = val1 + val2;
+			default/*aluonehot[9]*/: aluout = val1 + val2;
 			aluonehot[8]: aluout = val1 + (~val2 + 32'd1); // val1 - val2;
 			aluonehot[7]: aluout = val1 << val2[4:0];
 			aluonehot[6]: aluout = $signed(val1) < $signed(val2) ? 32'd1 : 32'd0;
@@ -38,8 +38,6 @@ always_comb begin
 			aluonehot[2]: aluout = $signed(val1) >>> val2[4:0];
 			aluonehot[1]: aluout = val1 | val2;
 			aluonehot[0]: aluout = val1 & val2;
-			default: begin
-			end
 		endcase
 	end else begin
 		// result is latched
