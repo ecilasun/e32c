@@ -280,7 +280,12 @@ always @(posedge aclk) begin
 
 					// To be used for relative addressing or to calculate new branch offset
 					PC <= fetchdout[63:32];
+
+					// Memory address to access for load/store
 					busaddress <= rval1 + immed;
+
+					// Default return address for load/store stall
+					resumeaddress <= fetchdout[63:32] + 32'd4;
 
 					if (opcode == `opcode_load) begin
 						busre <= 1'b1;
@@ -295,7 +300,6 @@ always @(posedge aclk) begin
 			LOADWAIT: begin
 				if (memready) begin
 					bresume <= 1'b1;
-					resumeaddress <= PC + 32'd4;
 					case (func3)
 						3'b000: begin // byte with sign extension
 							case (busaddress[1:0])
@@ -372,7 +376,6 @@ always @(posedge aclk) begin
 			STOREWAIT: begin
 				if (memready) begin
 					bresume <= 1'b1;
-					resumeaddress <= PC + 32'd4;
 					execstate <= FETCH;
 				end
 			end
@@ -381,7 +384,7 @@ always @(posedge aclk) begin
 				// Execute
 				case (opcode)
 					`opcode_lui: rdin <= immed;
-					`opcode_jal, `opcode_jalr, `opcode_branch: rdin <= PC + 32'd4;
+					`opcode_jal, `opcode_jalr, `opcode_branch: rdin <= resumeaddress;
 					`opcode_op, `opcode_op_imm, `opcode_auipc: rdin <= /*mwrite ? mout :*/ aluout;
 					/*`opcode_system: rdin <= csrval; // TODO: more here
 					*/
@@ -392,7 +395,7 @@ always @(posedge aclk) begin
 				// Branch address
 				case (opcode)
 					`opcode_jal, `opcode_jalr: begin resumeaddress <= aluout; bresume <= 1'b1; end
-					`opcode_branch: begin resumeaddress <= branchout ? aluout : PC + 32'd4; bresume <= 1'b1; end
+					`opcode_branch: begin resumeaddress <= branchout ? aluout : resumeaddress; bresume <= 1'b1; end
 				endcase
 
 				execstate <= FETCH;
