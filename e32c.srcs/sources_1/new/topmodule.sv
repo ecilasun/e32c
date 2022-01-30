@@ -29,7 +29,7 @@ axi4devicechain DeviceChain(
 cpu #(
 	.RESETVECTOR(32'h80000000),
 	.HARTID(0)
-) HART0 (
+) DECODEEXECWBACK (
 	.aclk(baseclock),
 	.aresetn(resetn),
 	.axi4if(busif) );

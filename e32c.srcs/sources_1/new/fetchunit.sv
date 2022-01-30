@@ -24,7 +24,7 @@ module fetchunit#(
 	input wire [3:0] buswe,
 	input wire busre,
 	input wire [31:0] busdin,
-	output logic [31:0] busdout,
+	output logic [31:0] busdout = 32'd0,
 	output logic memready = 1'b0 );
 
 // ----------------------------------------------------------------------------
@@ -95,6 +95,7 @@ always_ff @(posedge aclk) begin
 					fetchwe <= 1'b1;
 					fetchdin <= {PC, axi4if.rdata};
 
+					// TODO: Handle instuction decompression here (PC will increment by 2 instead for compressed)
 					// Advance the PC for next time around (this might get overriden during a branch stall)
 					PC <= PC + 32'd4;
 

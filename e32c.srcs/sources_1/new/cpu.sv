@@ -79,7 +79,7 @@ wire [31:0] busdout;
 fetchunit #(
 	.RESETVECTOR(RESETVECTOR),
 	.HARTID(HARTID)
-) IFETCH(
+) IFETCHLOADSTORE (
 	.aclk(aclk),
 	.aresetn(aresetn),
 	.resume(bresume),
@@ -139,7 +139,7 @@ branchlogicunit blu(
 	.bluop(bluop) );		// comparison operation code
 
 // ----------------------------------------------------------------------------
-// Decode / Execute
+// Instruction decode
 // ----------------------------------------------------------------------------
 
 typedef enum logic [3:0] {INIT, FETCH, DECODE, LOADWAIT, STORE, STOREWAIT, EXEC} exec_state_type;
@@ -243,6 +243,10 @@ always_comb begin
 		endcase
 	end
 end
+
+// ----------------------------------------------------------------------------
+// Instruction execute
+// ----------------------------------------------------------------------------
 
 always @(posedge aclk) begin
 	if (~aresetn) begin
