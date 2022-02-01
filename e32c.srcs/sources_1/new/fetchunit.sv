@@ -54,6 +54,7 @@ typedef enum logic [3:0] {INIT, FETCH, STALL, READWAIT, MEMREAD, MEMWRITE} fetch
 fetch_state_type fetchstate;
 
 logic [31:0] PC = RESETVECTOR;
+logic [4:0] delaycount = 5'd0;
 
 always_ff @(posedge aclk) begin
 	if (~aresetn) begin
@@ -65,6 +66,9 @@ always_ff @(posedge aclk) begin
 
 		case (fetchstate)
 			INIT : begin
+				delaycount <= delaycount + 4'h1;
+				if (delaycount == 5'd31) // Apparently we need to wait some clocks for the sim to work
+					fetchstate <= FETCH;
 				axi4if.awvalid <= 1'b0;
 				axi4if.wvalid <= 1'b0;
 				axi4if.wstrb <= 4'h0;
@@ -72,7 +76,6 @@ always_ff @(posedge aclk) begin
 				axi4if.arvalid <= 1'b0;
 				axi4if.rready <= 1'b0;
 				axi4if.bready <= 1'b0;
-				fetchstate <= FETCH;
 			end
 
 			FETCH : begin

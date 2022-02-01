@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="8,596.200 ns"></ZoomStartTime>
-      <ZoomEndTime time="8,819.301 ns"></ZoomEndTime>
-      <Cursor1Time time="8,695.000 ns"></Cursor1Time>
+      <ZoomStartTime time="9,122.150 ns"></ZoomStartTime>
+      <ZoomEndTime time="9,346.451 ns"></ZoomEndTime>
+      <Cursor1Time time="9,182.500 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="207"></NameColumnWidth>
-      <ValueColumnWidth column_width="98"></ValueColumnWidth>
+      <NameColumnWidth column_width="205"></NameColumnWidth>
+      <ValueColumnWidth column_width="88"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="104" />
+   <WVObjectSize size="51" />
    <wvobject type="divider" fp_name="divider149">
       <obj_property name="label">Top</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -38,7 +38,7 @@
       <obj_property name="ObjectShortName">resetn</obj_property>
    </wvobject>
    <wvobject type="divider" fp_name="divider102">
-      <obj_property name="label">bus</obj_property>
+      <obj_property name="label">BUS</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
    <wvobject fp_name="/simtop/topinst/busif/awaddr" type="array">
@@ -117,324 +117,120 @@
       <obj_property name="ElementShortName">rready</obj_property>
       <obj_property name="ObjectShortName">rready</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider150">
-      <obj_property name="label">fetch</obj_property>
+   <wvobject type="divider" fp_name="divider246">
+      <obj_property name="label">FETCH</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/aclk" type="logic">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/aclk" type="logic">
       <obj_property name="ElementShortName">aclk</obj_property>
       <obj_property name="ObjectShortName">aclk</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/aresetn" type="logic">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/aresetn" type="logic">
       <obj_property name="ElementShortName">aresetn</obj_property>
       <obj_property name="ObjectShortName">aresetn</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/resume" type="logic">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/resume" type="logic">
       <obj_property name="ElementShortName">resume</obj_property>
       <obj_property name="ObjectShortName">resume</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/resumeaddress" type="array">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/resumeaddress" type="array">
       <obj_property name="ElementShortName">resumeaddress[31:0]</obj_property>
       <obj_property name="ObjectShortName">resumeaddress[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/fetchre" type="logic">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchre" type="logic">
       <obj_property name="ElementShortName">fetchre</obj_property>
       <obj_property name="ObjectShortName">fetchre</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/fetchempty" type="logic">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchempty" type="logic">
       <obj_property name="ElementShortName">fetchempty</obj_property>
       <obj_property name="ObjectShortName">fetchempty</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/fetchvalid" type="logic">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchvalid" type="logic">
       <obj_property name="ElementShortName">fetchvalid</obj_property>
       <obj_property name="ObjectShortName">fetchvalid</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/fetchdout" type="array">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchdout" type="array">
       <obj_property name="ElementShortName">fetchdout[63:0]</obj_property>
       <obj_property name="ObjectShortName">fetchdout[63:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/busaddress" type="array">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/busaddress" type="array">
       <obj_property name="ElementShortName">busaddress[31:0]</obj_property>
       <obj_property name="ObjectShortName">busaddress[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/buswe" type="array">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/buswe" type="array">
       <obj_property name="ElementShortName">buswe[3:0]</obj_property>
       <obj_property name="ObjectShortName">buswe[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/busre" type="logic">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/busre" type="logic">
       <obj_property name="ElementShortName">busre</obj_property>
       <obj_property name="ObjectShortName">busre</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/busdin" type="array">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/busdin" type="array">
       <obj_property name="ElementShortName">busdin[31:0]</obj_property>
       <obj_property name="ObjectShortName">busdin[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/busdout" type="array">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/busdout" type="array">
       <obj_property name="ElementShortName">busdout[31:0]</obj_property>
       <obj_property name="ObjectShortName">busdout[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/memready" type="logic">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/memready" type="logic">
       <obj_property name="ElementShortName">memready</obj_property>
       <obj_property name="ObjectShortName">memready</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/fetchfull" type="logic">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchfull" type="logic">
       <obj_property name="ElementShortName">fetchfull</obj_property>
       <obj_property name="ObjectShortName">fetchfull</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/fetchdin" type="array">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchdin" type="array">
       <obj_property name="ElementShortName">fetchdin[63:0]</obj_property>
       <obj_property name="ObjectShortName">fetchdin[63:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/fetchwe" type="logic">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchwe" type="logic">
       <obj_property name="ElementShortName">fetchwe</obj_property>
       <obj_property name="ObjectShortName">fetchwe</obj_property>
+      <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/fetchstate" type="array">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchstate" type="array">
       <obj_property name="ElementShortName">fetchstate[3:0]</obj_property>
       <obj_property name="ObjectShortName">fetchstate[3:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/PC" type="array">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/PC" type="array">
       <obj_property name="ElementShortName">PC[31:0]</obj_property>
       <obj_property name="ObjectShortName">PC[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/RESETVECTOR" type="array">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/RESETVECTOR" type="array">
       <obj_property name="ElementShortName">RESETVECTOR[31:0]</obj_property>
       <obj_property name="ObjectShortName">RESETVECTOR[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IFETCH/HARTID" type="array">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/HARTID" type="array">
       <obj_property name="ElementShortName">HARTID[31:0]</obj_property>
       <obj_property name="ObjectShortName">HARTID[31:0]</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider164">
-      <obj_property name="label">dispatch</obj_property>
+   <wvobject type="divider" fp_name="divider240">
+      <obj_property name="label">H0</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/aclk" type="logic">
-      <obj_property name="ElementShortName">aclk</obj_property>
-      <obj_property name="ObjectShortName">aclk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/aresetn" type="logic">
-      <obj_property name="ElementShortName">aresetn</obj_property>
-      <obj_property name="ObjectShortName">aresetn</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/IntRegs/registers" type="array">
-      <obj_property name="ElementShortName">registers[0:31][31:0]</obj_property>
-      <obj_property name="ObjectShortName">registers[0:31][31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/PC" type="array">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/PC" type="array">
       <obj_property name="ElementShortName">PC[31:0]</obj_property>
       <obj_property name="ObjectShortName">PC[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/rs1" type="array">
-      <obj_property name="ElementShortName">rs1[5:0]</obj_property>
-      <obj_property name="ObjectShortName">rs1[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/rs2" type="array">
-      <obj_property name="ElementShortName">rs2[5:0]</obj_property>
-      <obj_property name="ObjectShortName">rs2[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/rd" type="array">
-      <obj_property name="ElementShortName">rd[5:0]</obj_property>
-      <obj_property name="ObjectShortName">rd[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/opcode" type="array">
-      <obj_property name="ElementShortName">opcode[6:0]</obj_property>
-      <obj_property name="ObjectShortName">opcode[6:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/func3" type="array">
-      <obj_property name="ElementShortName">func3[2:0]</obj_property>
-      <obj_property name="ObjectShortName">func3[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/func7" type="array">
-      <obj_property name="ElementShortName">func7[6:0]</obj_property>
-      <obj_property name="ObjectShortName">func7[6:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/immed" type="array">
-      <obj_property name="ElementShortName">immed[31:0]</obj_property>
-      <obj_property name="ObjectShortName">immed[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/aluop" type="array">
-      <obj_property name="ElementShortName">aluop[2:0]</obj_property>
-      <obj_property name="ObjectShortName">aluop[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/bluop" type="array">
-      <obj_property name="ElementShortName">bluop[2:0]</obj_property>
-      <obj_property name="ObjectShortName">bluop[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/regflags" type="array">
-      <obj_property name="ElementShortName">regflags[0:31][1:0]</obj_property>
-      <obj_property name="ObjectShortName">regflags[0:31][1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/rwe" type="logic">
-      <obj_property name="ElementShortName">rwe</obj_property>
-      <obj_property name="ObjectShortName">rwe</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/rdin" type="array">
-      <obj_property name="ElementShortName">rdin[31:0]</obj_property>
-      <obj_property name="ObjectShortName">rdin[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/rval1" type="array">
-      <obj_property name="ElementShortName">rval1[31:0]</obj_property>
-      <obj_property name="ObjectShortName">rval1[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/rval2" type="array">
-      <obj_property name="ElementShortName">rval2[31:0]</obj_property>
-      <obj_property name="ObjectShortName">rval2[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/resumeaddress" type="array">
-      <obj_property name="ElementShortName">resumeaddress[31:0]</obj_property>
-      <obj_property name="ObjectShortName">resumeaddress[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/bresume" type="logic">
-      <obj_property name="ElementShortName">bresume</obj_property>
-      <obj_property name="ObjectShortName">bresume</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/fetchre" type="logic">
-      <obj_property name="ElementShortName">fetchre</obj_property>
-      <obj_property name="ObjectShortName">fetchre</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/fetchempty" type="logic">
-      <obj_property name="ElementShortName">fetchempty</obj_property>
-      <obj_property name="ObjectShortName">fetchempty</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/fetchvalid" type="logic">
-      <obj_property name="ElementShortName">fetchvalid</obj_property>
-      <obj_property name="ObjectShortName">fetchvalid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/fetchdout" type="array">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/fetchdout" type="array">
       <obj_property name="ElementShortName">fetchdout[63:0]</obj_property>
       <obj_property name="ObjectShortName">fetchdout[63:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/memready" type="logic">
-      <obj_property name="ElementShortName">memready</obj_property>
-      <obj_property name="ObjectShortName">memready</obj_property>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/progressstrobe" type="logic">
+      <obj_property name="ElementShortName">progressstrobe</obj_property>
+      <obj_property name="ObjectShortName">progressstrobe</obj_property>
+      <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/busaddress" type="array">
-      <obj_property name="ElementShortName">busaddress[31:0]</obj_property>
-      <obj_property name="ObjectShortName">busaddress[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/busdin" type="array">
-      <obj_property name="ElementShortName">busdin[31:0]</obj_property>
-      <obj_property name="ObjectShortName">busdin[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/buswe" type="array">
-      <obj_property name="ElementShortName">buswe[3:0]</obj_property>
-      <obj_property name="ObjectShortName">buswe[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/busre" type="logic">
-      <obj_property name="ElementShortName">busre</obj_property>
-      <obj_property name="ObjectShortName">busre</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/busdout" type="array">
-      <obj_property name="ElementShortName">busdout[31:0]</obj_property>
-      <obj_property name="ObjectShortName">busdout[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/reqalu" type="logic">
-      <obj_property name="ElementShortName">reqalu</obj_property>
-      <obj_property name="ObjectShortName">reqalu</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/aluout" type="array">
-      <obj_property name="ElementShortName">aluout[31:0]</obj_property>
-      <obj_property name="ObjectShortName">aluout[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/selector" type="logic">
-      <obj_property name="ElementShortName">selector</obj_property>
-      <obj_property name="ObjectShortName">selector</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/branchout" type="logic">
-      <obj_property name="ElementShortName">branchout</obj_property>
-      <obj_property name="ObjectShortName">branchout</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/execstate" type="array">
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/execstate" type="array">
       <obj_property name="ElementShortName">execstate[3:0]</obj_property>
       <obj_property name="ObjectShortName">execstate[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/isfpuopcode" type="logic">
-      <obj_property name="ElementShortName">isfpuopcode</obj_property>
-      <obj_property name="ObjectShortName">isfpuopcode</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/recordingform" type="logic">
-      <obj_property name="ElementShortName">recordingform</obj_property>
-      <obj_property name="ObjectShortName">recordingform</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/RESETVECTOR" type="array">
-      <obj_property name="ElementShortName">RESETVECTOR[31:0]</obj_property>
-      <obj_property name="ObjectShortName">RESETVECTOR[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/HARTID" type="array">
-      <obj_property name="ElementShortName">HARTID[31:0]</obj_property>
-      <obj_property name="ObjectShortName">HARTID[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="divider" fp_name="divider334">
-      <obj_property name="label">ALU</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/alu/enable" type="logic">
-      <obj_property name="ElementShortName">enable</obj_property>
-      <obj_property name="ObjectShortName">enable</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/alu/aluout" type="array">
-      <obj_property name="ElementShortName">aluout[31:0]</obj_property>
-      <obj_property name="ObjectShortName">aluout[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/alu/func3" type="array">
-      <obj_property name="ElementShortName">func3[2:0]</obj_property>
-      <obj_property name="ObjectShortName">func3[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/alu/val1" type="array">
-      <obj_property name="ElementShortName">val1[31:0]</obj_property>
-      <obj_property name="ObjectShortName">val1[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/alu/val2" type="array">
-      <obj_property name="ElementShortName">val2[31:0]</obj_property>
-      <obj_property name="ObjectShortName">val2[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/alu/aluop" type="array">
-      <obj_property name="ElementShortName">aluop[3:0]</obj_property>
-      <obj_property name="ObjectShortName">aluop[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/alu/aluonehot" type="array">
-      <obj_property name="ElementShortName">aluonehot[9:0]</obj_property>
-      <obj_property name="ObjectShortName">aluonehot[9:0]</obj_property>
-   </wvobject>
-   <wvobject type="divider" fp_name="divider335">
-      <obj_property name="label">BLU</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/blu/enable" type="logic">
-      <obj_property name="ElementShortName">enable</obj_property>
-      <obj_property name="ObjectShortName">enable</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/blu/branchout" type="logic">
-      <obj_property name="ElementShortName">branchout</obj_property>
-      <obj_property name="ObjectShortName">branchout</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/blu/val1" type="array">
-      <obj_property name="ElementShortName">val1[31:0]</obj_property>
-      <obj_property name="ObjectShortName">val1[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/blu/val2" type="array">
-      <obj_property name="ElementShortName">val2[31:0]</obj_property>
-      <obj_property name="ObjectShortName">val2[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/blu/bluop" type="array">
-      <obj_property name="ElementShortName">bluop[2:0]</obj_property>
-      <obj_property name="ObjectShortName">bluop[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/blu/aluonehot" type="array">
-      <obj_property name="ElementShortName">aluonehot[5:0]</obj_property>
-      <obj_property name="ObjectShortName">aluonehot[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/blu/eq" type="logic">
-      <obj_property name="ElementShortName">eq</obj_property>
-      <obj_property name="ObjectShortName">eq</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/blu/sless" type="logic">
-      <obj_property name="ElementShortName">sless</obj_property>
-      <obj_property name="ObjectShortName">sless</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/HART0/blu/less" type="logic">
-      <obj_property name="ElementShortName">less</obj_property>
-      <obj_property name="ObjectShortName">less</obj_property>
+      <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
 </wave_config>

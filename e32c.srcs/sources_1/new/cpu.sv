@@ -70,8 +70,8 @@ wire fetchempty, fetchvalid;
 wire [63:0] fetchdout;
 wire memready;
 
-logic [31:0] busaddress;
-logic [31:0] busdin;
+logic [31:0] busaddress = 32'd0;
+logic [31:0] busdin = 32'd0;
 logic [3:0] buswe = 4'h0;
 logic busre = 1'b0;
 wire [31:0] busdout;

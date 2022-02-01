@@ -10,7 +10,7 @@ module registerfile(
 	output wire [31:0] dout1,	// Data out
 	output wire [31:0] dout2 );
 
-logic [31:0] registers[0:31];
+logic [31:0] registers [0:31]; // Unpacked array of registers
 
 initial begin
 	int i;
