@@ -109,6 +109,8 @@ always_ff @(posedge aclk) begin
 							// Will need to stall now, since we need to calculate next PC
 							// or LOAD/STORE data which would clash with memory activity in this unit
 							// NOTE: Due to the nature of AXI4Lite, might not need to stall for STORE
+							// NOTE: The CPU doesn't need to tell us to 'resume' after a LOAD/STORE
+							// since the data operation is already communicated and FETCH can self-resume
 							fetchstate <= STALL;
 						end
 						default: begin
@@ -151,7 +153,8 @@ always_ff @(posedge aclk) begin
 					axi4if.rready <= 1'b0;
 					busdout <= axi4if.rdata;
 					memready <= 1'b1;
-					fetchstate <= STALL;
+					// Directly jump to fetch since we know where we'll resume execution from
+					fetchstate <= FETCH;
 				end
 			end
 
@@ -166,7 +169,8 @@ always_ff @(posedge aclk) begin
 				if (axi4if.bvalid) begin
 					memready <= 1'b1;
 					axi4if.bready <= 1'b0;
-					fetchstate <= STALL;
+					// Directly jump to fetch since we know where we'll resume execution from
+					fetchstate <= FETCH;
 				end
 			end
 		endcase

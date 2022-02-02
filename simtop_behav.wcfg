@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="9,122.150 ns"></ZoomStartTime>
-      <ZoomEndTime time="9,346.451 ns"></ZoomEndTime>
-      <Cursor1Time time="9,182.500 ns"></Cursor1Time>
+      <ZoomStartTime time="9,273.800 ns"></ZoomStartTime>
+      <ZoomEndTime time="9,400.101 ns"></ZoomEndTime>
+      <Cursor1Time time="9,307.600 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="205"></NameColumnWidth>
+      <NameColumnWidth column_width="187"></NameColumnWidth>
       <ValueColumnWidth column_width="88"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="51" />
+   <WVObjectSize size="56" />
    <wvobject type="divider" fp_name="divider149">
       <obj_property name="label">Top</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -149,10 +149,6 @@
       <obj_property name="ElementShortName">fetchvalid</obj_property>
       <obj_property name="ObjectShortName">fetchvalid</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchdout" type="array">
-      <obj_property name="ElementShortName">fetchdout[63:0]</obj_property>
-      <obj_property name="ObjectShortName">fetchdout[63:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/busaddress" type="array">
       <obj_property name="ElementShortName">busaddress[31:0]</obj_property>
       <obj_property name="ObjectShortName">busaddress[31:0]</obj_property>
@@ -181,13 +177,13 @@
       <obj_property name="ElementShortName">fetchfull</obj_property>
       <obj_property name="ObjectShortName">fetchfull</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchdin" type="array">
-      <obj_property name="ElementShortName">fetchdin[63:0]</obj_property>
-      <obj_property name="ObjectShortName">fetchdin[63:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchwe" type="logic">
       <obj_property name="ElementShortName">fetchwe</obj_property>
       <obj_property name="ObjectShortName">fetchwe</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/PC" type="array">
+      <obj_property name="ElementShortName">PC[31:0]</obj_property>
+      <obj_property name="ObjectShortName">PC[31:0]</obj_property>
       <obj_property name="CustomSignalColor">#FF00FF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
@@ -197,9 +193,15 @@
       <obj_property name="CustomSignalColor">#FFFF00</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/PC" type="array">
-      <obj_property name="ElementShortName">PC[31:0]</obj_property>
-      <obj_property name="ObjectShortName">PC[31:0]</obj_property>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchdin" type="array">
+      <obj_property name="ElementShortName">fetchdin[63:0]</obj_property>
+      <obj_property name="ObjectShortName">fetchdin[63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/delaycount" type="array">
+      <obj_property name="ElementShortName">delaycount[4:0]</obj_property>
+      <obj_property name="ObjectShortName">delaycount[4:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/RESETVECTOR" type="array">
       <obj_property name="ElementShortName">RESETVECTOR[31:0]</obj_property>
@@ -216,14 +218,6 @@
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/PC" type="array">
       <obj_property name="ElementShortName">PC[31:0]</obj_property>
       <obj_property name="ObjectShortName">PC[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/fetchdout" type="array">
-      <obj_property name="ElementShortName">fetchdout[63:0]</obj_property>
-      <obj_property name="ObjectShortName">fetchdout[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/progressstrobe" type="logic">
-      <obj_property name="ElementShortName">progressstrobe</obj_property>
-      <obj_property name="ObjectShortName">progressstrobe</obj_property>
       <obj_property name="CustomSignalColor">#FF00FF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
@@ -232,5 +226,35 @@
       <obj_property name="ObjectShortName">execstate[3:0]</obj_property>
       <obj_property name="CustomSignalColor">#FFFF00</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/fetchdout" type="array">
+      <obj_property name="ElementShortName">fetchdout[63:0]</obj_property>
+      <obj_property name="ObjectShortName">fetchdout[63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/busaddress" type="array">
+      <obj_property name="ElementShortName">busaddress[31:0]</obj_property>
+      <obj_property name="ObjectShortName">busaddress[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/rs1" type="array">
+      <obj_property name="ElementShortName">rs1[5:0]</obj_property>
+      <obj_property name="ObjectShortName">rs1[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/rs2" type="array">
+      <obj_property name="ElementShortName">rs2[5:0]</obj_property>
+      <obj_property name="ObjectShortName">rs2[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/rval1" type="array">
+      <obj_property name="ElementShortName">rval1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rval1[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/rval2" type="array">
+      <obj_property name="ElementShortName">rval2[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rval2[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/immed" type="array">
+      <obj_property name="ElementShortName">immed[31:0]</obj_property>
+      <obj_property name="ObjectShortName">immed[31:0]</obj_property>
    </wvobject>
 </wave_config>

@@ -142,7 +142,7 @@ branchlogicunit blu(
 // Instruction decode
 // ----------------------------------------------------------------------------
 
-typedef enum logic [3:0] {INIT, FETCH, DECODE, LOADWAIT, STORE, STOREWAIT, EXEC} exec_state_type;
+typedef enum logic [3:0] {INIT, FETCH, DECODE, LOADWAIT, STORE, EXEC} exec_state_type;
 exec_state_type execstate;
 
 always_comb begin
@@ -303,7 +303,6 @@ always @(posedge aclk) begin
 
 			LOADWAIT: begin
 				if (memready) begin
-					bresume <= 1'b1;
 					case (func3)
 						3'b000: begin // byte with sign extension
 							case (busaddress[1:0])
@@ -348,6 +347,8 @@ always @(posedge aclk) begin
 			end
 
 			STORE: begin
+				// NOTE: We do not need to wait for memready here since the write can happen
+				// by itself, as long as the order of memory operations do not change from our view.
 				case(func3)
 					3'b000: begin // 8 bit
 						busdin <= {rval2[7:0], rval2[7:0], rval2[7:0], rval2[7:0]};
@@ -374,14 +375,7 @@ always @(posedge aclk) begin
 						buswe <= 4'h0;
 					end
 				endcase
-				execstate <= STOREWAIT;
-			end
-
-			STOREWAIT: begin
-				if (memready) begin
-					bresume <= 1'b1;
-					execstate <= FETCH;
-				end
+				execstate <= FETCH;
 			end
 
 			EXEC: begin
