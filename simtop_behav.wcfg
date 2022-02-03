@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="9,273.800 ns"></ZoomStartTime>
-      <ZoomEndTime time="9,400.101 ns"></ZoomEndTime>
-      <Cursor1Time time="9,307.600 ns"></Cursor1Time>
+      <ZoomStartTime time="521.482500 us"></ZoomStartTime>
+      <ZoomEndTime time="3,417.482501 us"></ZoomEndTime>
+      <Cursor1Time time="1,595.482500 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="187"></NameColumnWidth>
+      <NameColumnWidth column_width="175"></NameColumnWidth>
       <ValueColumnWidth column_width="88"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="56" />
+   <WVObjectSize size="60" />
    <wvobject type="divider" fp_name="divider149">
       <obj_property name="label">Top</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -56,6 +56,7 @@
    <wvobject fp_name="/simtop/topinst/busif/wdata" type="array">
       <obj_property name="ElementShortName">wdata[31:0]</obj_property>
       <obj_property name="ObjectShortName">wdata[31:0]</obj_property>
+      <obj_property name="Radix">ASCIIRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/simtop/topinst/busif/wstrb" type="array">
       <obj_property name="ElementShortName">wstrb[3:0]</obj_property>
@@ -200,8 +201,8 @@
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/delaycount" type="array">
-      <obj_property name="ElementShortName">delaycount[4:0]</obj_property>
-      <obj_property name="ObjectShortName">delaycount[4:0]</obj_property>
+      <obj_property name="ElementShortName">delaycount[3:0]</obj_property>
+      <obj_property name="ObjectShortName">delaycount[3:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/RESETVECTOR" type="array">
       <obj_property name="ElementShortName">RESETVECTOR[31:0]</obj_property>
@@ -233,9 +234,33 @@
       <obj_property name="CustomSignalColor">#FF0000</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/delaycount" type="array">
+      <obj_property name="ElementShortName">delaycount[4:0]</obj_property>
+      <obj_property name="ObjectShortName">delaycount[4:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/busaddress" type="array">
       <obj_property name="ElementShortName">busaddress[31:0]</obj_property>
       <obj_property name="ObjectShortName">busaddress[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/busre" type="logic">
+      <obj_property name="ElementShortName">busre</obj_property>
+      <obj_property name="ObjectShortName">busre</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/buswe" type="array">
+      <obj_property name="ElementShortName">buswe[3:0]</obj_property>
+      <obj_property name="ObjectShortName">buswe[3:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/busdout" type="array">
+      <obj_property name="ElementShortName">busdout[31:0]</obj_property>
+      <obj_property name="ObjectShortName">busdout[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/rs1" type="array">
       <obj_property name="ElementShortName">rs1[5:0]</obj_property>

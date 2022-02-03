@@ -19,6 +19,7 @@ module cpu#(
 // ----------------------------------------------------------------------------
 
 logic [31:0] PC = 32'd0;
+logic [31:0] adjacentPC = 32'd0;
 
 logic [5:0] rs1 = 6'd0;
 logic [5:0] rs2 = 6'd0;
@@ -100,7 +101,7 @@ fetchunit #(
 // ALU
 // ----------------------------------------------------------------------------
 
-logic aluen = 1'b0;
+logic logicen = 1'b0;
 
 wire reqalu =	(opcode==`opcode_auipc) |
 				(opcode==`opcode_jal) |
@@ -116,7 +117,7 @@ wire selector =	(opcode==`opcode_jalr) |
 				(opcode==`opcode_store);
 
 arithmeticlogicunit alu(
-	.enable(aluen),								// hold high to get a result on next clock
+	.enable(logicen),								// hold high to get a result on next clock
 	.aluout(aluout),							// result of calculation
 	.func3(func3),								// alu sub-operation code
 	.val1(reqalu ? PC : rval1),					// input value 1
@@ -127,12 +128,10 @@ arithmeticlogicunit alu(
 // BLU
 // ----------------------------------------------------------------------------
 
-logic bluen = 1'b0;
-
 wire branchout;
 
 branchlogicunit blu(
-	.enable(bluen),
+	.enable(logicen),
 	.branchout(branchout),	// high when branch should be taken based on op
 	.val1(rval1),			// input value 1
 	.val2(rval2),			// input value 2
@@ -248,6 +247,19 @@ end
 // Instruction execute
 // ----------------------------------------------------------------------------
 
+always_comb begin
+	if (fetchvalid) begin
+
+		// To be used for relative addressing or to calculate new branch offset
+		PC = fetchdout[63:32];
+
+		// Memory address to access for load/store
+		busaddress = rval1 + immed;
+	end
+end
+
+logic [4:0] delaycount = 5'd0;
+
 always @(posedge aclk) begin
 	if (~aresetn) begin
 		//
@@ -256,16 +268,18 @@ always @(posedge aclk) begin
 
 		fetchre <= 1'b0;
 		bresume <= 1'b0;
-		aluen <= 1'b0;
-		bluen <= 1'b0;
+		logicen <= 1'b0;
 		buswe <= 4'h0;
 		busre <= 1'b0;
 		rwe <= 1'b0;
 
 		case (execstate)
 			INIT: begin
-				// ...
-				execstate <= FETCH;
+				delaycount <= delaycount + 5'd1;
+				if (delaycount == 5'd31)
+					execstate <= FETCH;
+				else
+					execstate <= INIT ;
 			end
 
 			FETCH: begin
@@ -279,23 +293,44 @@ always @(posedge aclk) begin
 			DECODE: begin
 				// Decode
 				if (fetchvalid) begin
-					aluen <= 1'b1;
-					bluen <= 1'b1;
-
-					// To be used for relative addressing or to calculate new branch offset
-					PC <= fetchdout[63:32];
-
-					// Memory address to access for load/store
-					busaddress <= rval1 + immed;
+					logicen <= 1'b1;
 
 					// Default return address for load/store stall
-					resumeaddress <= fetchdout[63:32] + 32'd4;
+					adjacentPC <= PC + 32'd4;
 
 					if (opcode == `opcode_load) begin
 						busre <= 1'b1;
 						execstate <= LOADWAIT;
 					end else if (opcode == `opcode_store) begin
-						execstate <= STORE;
+						// NOTE: We do not need to wait for memready here since the write can happen
+						// by itself, as long as the order of memory operations do not change from our view.
+						case(func3)
+							3'b000: begin // 8 bit
+								busdin <= {rval2[7:0], rval2[7:0], rval2[7:0], rval2[7:0]};
+								case (busaddress[1:0])
+									2'b11: buswe <= 4'h8;
+									2'b10: buswe <= 4'h4;
+									2'b01: buswe <= 4'h2;
+									2'b00: buswe <= 4'h1;
+								endcase
+							end
+							3'b001: begin // 16 bit
+								busdin <= {rval2[15:0], rval2[15:0]};
+								case (busaddress[1])
+									1'b1: buswe <= 4'hc;
+									1'b0: buswe <= 4'h3;
+								endcase
+							end
+							3'b010: begin // 32 bit
+								busdin <= /*(opcode==`opcode_float_stw) ? frval2 :*/ rval2;
+								buswe <= 4'hf;
+							end
+							default: begin
+								busdin <= 32'd0;
+								buswe <= 4'h0;
+							end
+						endcase
+						execstate <= FETCH;
 					end else
 						execstate <= EXEC;
 				end
@@ -346,43 +381,11 @@ always @(posedge aclk) begin
 				end
 			end
 
-			STORE: begin
-				// NOTE: We do not need to wait for memready here since the write can happen
-				// by itself, as long as the order of memory operations do not change from our view.
-				case(func3)
-					3'b000: begin // 8 bit
-						busdin <= {rval2[7:0], rval2[7:0], rval2[7:0], rval2[7:0]};
-						case (busaddress[1:0])
-							2'b11: buswe <= 4'h8;
-							2'b10: buswe <= 4'h4;
-							2'b01: buswe <= 4'h2;
-							2'b00: buswe <= 4'h1;
-						endcase
-					end
-					3'b001: begin // 16 bit
-						busdin <= {rval2[15:0], rval2[15:0]};
-						case (busaddress[1])
-							1'b1: buswe <= 4'hc;
-							1'b0: buswe <= 4'h3;
-						endcase
-					end
-					3'b010: begin // 32 bit
-						busdin <= /*(opcode==`opcode_float_stw) ? frval2 :*/ rval2;
-						buswe <= 4'hf;
-					end
-					default: begin
-						busdin <= 32'd0;
-						buswe <= 4'h0;
-					end
-				endcase
-				execstate <= FETCH;
-			end
-
 			EXEC: begin
 				// Execute
 				case (opcode)
 					`opcode_lui: rdin <= immed;
-					`opcode_jal, `opcode_jalr, `opcode_branch: rdin <= resumeaddress;
+					`opcode_jal, `opcode_jalr, `opcode_branch: rdin <= adjacentPC;
 					`opcode_op, `opcode_op_imm, `opcode_auipc: rdin <= /*mwrite ? mout :*/ aluout;
 					/*`opcode_system: rdin <= csrval; // TODO: more here
 					*/
@@ -393,7 +396,7 @@ always @(posedge aclk) begin
 				// Branch address
 				case (opcode)
 					`opcode_jal, `opcode_jalr: begin resumeaddress <= aluout; bresume <= 1'b1; end
-					`opcode_branch: begin resumeaddress <= branchout ? aluout : resumeaddress; bresume <= 1'b1; end
+					`opcode_branch: begin resumeaddress <= branchout ? aluout : adjacentPC; bresume <= 1'b1; end
 				endcase
 
 				execstate <= FETCH;

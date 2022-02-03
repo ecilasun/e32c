@@ -141,31 +141,36 @@ always @(posedge aclk) begin
 end
 
 always @(posedge aclk) begin
-	// write data
-	we <= 4'h0;
-	case (writestate)
-		2'b00: begin
-			if (axi4if.wvalid & (~uartsendfull)) begin
-				// latch the data and byte select
-				din <= axi4if.wdata[7:0];
-				we <= axi4if.wstrb;
-				axi4if.wready <= 1'b1;
-				writestate <= 2'b01;
+	if (~aresetn) begin
+		axi4if.bresp <= 2'b00; // okay
+		axi4if.bvalid <= 1'b0;
+		axi4if.wready <= 1'b0;
+	end else begin
+		// write data
+		we <= 4'h0;
+		case (writestate)
+			2'b00: begin
+				if (axi4if.wvalid & (~uartsendfull)) begin
+					// latch the data and byte select
+					din <= axi4if.wdata[7:0];
+					we <= axi4if.wstrb;
+					axi4if.wready <= 1'b1;
+					writestate <= 2'b01;
+				end
 			end
-		end
-		2'b01: begin
-			axi4if.wready <= 1'b0;
-			if (axi4if.bready) begin
-				axi4if.bvalid <= 1'b1;
-				axi4if.bresp <= 2'b00; // okay
-				writestate <= 2'b10;
+			2'b01: begin
+				axi4if.wready <= 1'b0;
+				if (axi4if.bready) begin
+					axi4if.bvalid <= 1'b1;
+					writestate <= 2'b10;
+				end
 			end
-		end
-		default/*2'b10*/: begin
-			axi4if.bvalid <= 1'b0;
-			writestate <= 2'b00;
-		end
-	endcase
+			default/*2'b10*/: begin
+				axi4if.bvalid <= 1'b0;
+				writestate <= 2'b00;
+			end
+		endcase
+	end
 end
 
 always @(posedge aclk) begin

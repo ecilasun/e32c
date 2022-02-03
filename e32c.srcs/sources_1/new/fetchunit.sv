@@ -54,7 +54,39 @@ typedef enum logic [3:0] {INIT, FETCH, STALL, READWAIT, MEMREAD, MEMWRITE} fetch
 fetch_state_type fetchstate;
 
 logic [31:0] PC = RESETVECTOR;
-logic [4:0] delaycount = 5'd0;
+logic [3:0] delaycount = 4'd0;
+
+always_ff @(posedge aclk) begin
+	if (~aresetn) begin
+		axi4if.awvalid <= 1'b0;
+		axi4if.wvalid <= 1'b0;
+		axi4if.wstrb <= 4'h0;
+		axi4if.wlast <= 1'b1;
+		axi4if.bready <= 1'b0;
+	end else begin
+		if (|buswe) begin
+			// Write requested
+			axi4if.awaddr <= busaddress;
+			axi4if.awvalid <= 1'b1;
+			axi4if.wvalid <= 1'b1;
+			axi4if.bready <= 1'b1;
+			axi4if.wstrb <= buswe;
+			axi4if.wdata <= busdin;
+		end else begin
+			// Track write response
+			if (axi4if.awready) begin
+				axi4if.awvalid <= 1'b0;
+			end
+			if (axi4if.wready) begin
+				axi4if.wvalid <= 1'b0;
+				axi4if.wstrb <= 4'h0;
+			end
+			if (axi4if.bvalid) begin
+				axi4if.bready <= 1'b0;
+			end
+		end
+	end
+end
 
 always_ff @(posedge aclk) begin
 	if (~aresetn) begin
@@ -67,15 +99,12 @@ always_ff @(posedge aclk) begin
 		case (fetchstate)
 			INIT : begin
 				delaycount <= delaycount + 4'h1;
-				if (delaycount == 5'd31) // Apparently we need to wait some clocks for the sim to work
+				if (delaycount == 4'd15) // Apparently we need to wait some clocks for the sim to work
 					fetchstate <= FETCH;
-				axi4if.awvalid <= 1'b0;
-				axi4if.wvalid <= 1'b0;
-				axi4if.wstrb <= 4'h0;
-				axi4if.wlast <= 1'b1;
+				else
+					fetchstate <= INIT;
 				axi4if.arvalid <= 1'b0;
 				axi4if.rready <= 1'b0;
-				axi4if.bready <= 1'b0;
 			end
 
 			FETCH : begin
@@ -104,12 +133,12 @@ always_ff @(posedge aclk) begin
 
 					case (axi4if.rdata[6:0])
 						`opcode_branch, `opcode_jal, `opcode_jalr,
-						`opcode_load, `opcode_float_ldw,
-						`opcode_store, `opcode_float_stw: begin
+						`opcode_load, `opcode_float_ldw/*,
+						`opcode_store, `opcode_float_stw*/: begin
 							// Will need to stall now, since we need to calculate next PC
 							// or LOAD/STORE data which would clash with memory activity in this unit
-							// NOTE: Due to the nature of AXI4Lite, might not need to stall for STORE
-							// NOTE: The CPU doesn't need to tell us to 'resume' after a LOAD/STORE
+							// NOTE: Due to the nature of AXI4Lite, we do not need to stall for STORE which is handled simultaneously
+							// NOTE: The CPU doesn't need to tell us to 'resume' after a LOAD
 							// since the data operation is already communicated and FETCH can self-resume
 							fetchstate <= STALL;
 						end
@@ -131,14 +160,6 @@ always_ff @(posedge aclk) begin
 						axi4if.arvalid <= 1'b1;
 						axi4if.rready <= 1'b1;
 						fetchstate <= MEMREAD;
-					end else if (|buswe) begin
-						axi4if.awaddr <= busaddress;
-						axi4if.awvalid <= 1'b1;
-						axi4if.wvalid <= 1'b1;
-						axi4if.bready <= 1'b1;
-						axi4if.wstrb <= buswe;
-						axi4if.wdata <= busdin;
-						fetchstate <= MEMWRITE;
 					end else begin
 						fetchstate <= STALL;
 					end
@@ -153,22 +174,6 @@ always_ff @(posedge aclk) begin
 					axi4if.rready <= 1'b0;
 					busdout <= axi4if.rdata;
 					memready <= 1'b1;
-					// Directly jump to fetch since we know where we'll resume execution from
-					fetchstate <= FETCH;
-				end
-			end
-
-			MEMWRITE: begin
-				if (axi4if.awready) begin
-					axi4if.awvalid <= 1'b0;
-				end
-				if (axi4if.wready) begin
-					axi4if.wvalid <= 1'b0;
-					axi4if.wstrb <= 4'h0;
-				end
-				if (axi4if.bvalid) begin
-					memready <= 1'b1;
-					axi4if.bready <= 1'b0;
 					// Directly jump to fetch since we know where we'll resume execution from
 					fetchstate <= FETCH;
 				end
