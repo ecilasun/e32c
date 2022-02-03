@@ -98,3 +98,77 @@
 `define csr_retilo		5'd13
 `define csr_timehi		5'd14
 `define csr_retihi		5'd15
+
+// ------------------------------------------
+// Sub-instructions
+// ------------------------------------------
+
+// Flow control
+`define f3_beq		3'b000
+`define f3_bne		3'b001
+`define f3_blt		3'b100
+`define f3_bge		3'b101
+`define f3_bltu		3'b110
+`define f3_bgeu		3'b111
+
+// Logic ops
+`define f3_add		3'b000
+`define f3_sll		3'b001
+`define f3_slt		3'b010
+`define f3_sltu		3'b011
+`define f3_xor		3'b100
+`define f3_sr		3'b101
+`define f3_or		3'b110
+`define f3_and		3'b111
+
+// Integer math
+`define f3_mul		3'b000
+`define f3_mulh		3'b001
+`define f3_mulhsu	3'b010
+`define f3_mulhu	3'b011
+`define f3_div		3'b100
+`define f3_divu		3'b101
+`define f3_rem		3'b110
+`define f3_remu		3'b111
+
+// Load type
+`define f3_lb		3'b000
+`define f3_lh		3'b001
+`define f3_lw		3'b010
+`define f3_lbu		3'b100
+`define f3_lhu		3'b101
+
+// Store type
+`define f3_sb		3'b000
+`define f3_sh		3'b001
+`define f3_sw		3'b010
+
+// Floating point math
+`define f7_fadd        7'b0000000
+`define f7_fsub        7'b0000100
+`define f7_fmul        7'b0001000
+`define f7_fdiv        7'b0001100
+`define f7_fsqrt       7'b0101100
+
+// Sign injection
+`define f7_fsgnj       7'b0010000
+`define f7_fsgnjn      7'b0010000
+`define f7_fsgnjx      7'b0010000
+
+// Comparison / classification
+`define f7_fmin        7'b0010100
+`define f7_fmax        7'b0010100
+`define f7_feq         7'b1010000
+`define f7_flt         7'b1010000
+`define f7_fle         7'b1010000
+`define f7_fclass      7'b1110000
+
+// Conversion from/to integer
+`define f7_fcvtws      7'b1100000
+`define f7_fcvtwus     7'b1100000
+`define f7_fcvtsw      7'b1101000
+`define f7_fcvtswu     7'b1101000
+
+// Move from/to integer registers
+`define f7_fmvxw       7'b1110000
+`define f7_fmvwx       7'b1111000

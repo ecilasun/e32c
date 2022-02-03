@@ -247,6 +247,7 @@ end
 // Instruction execute
 // ----------------------------------------------------------------------------
 
+logic [3:0] wstrobe = 4'h0;
 always_comb begin
 	if (fetchvalid) begin
 
@@ -255,6 +256,34 @@ always_comb begin
 
 		// Memory address to access for load/store
 		busaddress = rval1 + immed;
+
+		if (opcode == `opcode_store) begin
+			// NOTE: We do not need to wait for memready here since the write can happen
+			// by itself, as long as the order of memory operations do not change from our view.
+			case(func3)
+				`f3_sb: begin // 8 bit
+					busdin = {rval2[7:0], rval2[7:0], rval2[7:0], rval2[7:0]};
+					case (busaddress[1:0])
+						2'b11: wstrobe = 4'h8;
+						2'b10: wstrobe = 4'h4;
+						2'b01: wstrobe = 4'h2;
+						2'b00: wstrobe = 4'h1;
+					endcase
+				end
+				`f3_sh: begin // 16 bit
+					busdin = {rval2[15:0], rval2[15:0]};
+					case (busaddress[1])
+						1'b1: wstrobe = 4'hc;
+						1'b0: wstrobe = 4'h3;
+					endcase
+				end
+				default /*`f3_sw*/: begin // 32 bit
+					busdin = /*(opcode==`opcode_float_stw) ? frval2 :*/ rval2;
+					wstrobe = 4'hf;
+				end
+			endcase
+		end
+
 	end
 end
 
@@ -302,34 +331,7 @@ always @(posedge aclk) begin
 						busre <= 1'b1;
 						execstate <= LOADWAIT;
 					end else if (opcode == `opcode_store) begin
-						// NOTE: We do not need to wait for memready here since the write can happen
-						// by itself, as long as the order of memory operations do not change from our view.
-						case(func3)
-							3'b000: begin // 8 bit
-								busdin <= {rval2[7:0], rval2[7:0], rval2[7:0], rval2[7:0]};
-								case (busaddress[1:0])
-									2'b11: buswe <= 4'h8;
-									2'b10: buswe <= 4'h4;
-									2'b01: buswe <= 4'h2;
-									2'b00: buswe <= 4'h1;
-								endcase
-							end
-							3'b001: begin // 16 bit
-								busdin <= {rval2[15:0], rval2[15:0]};
-								case (busaddress[1])
-									1'b1: buswe <= 4'hc;
-									1'b0: buswe <= 4'h3;
-								endcase
-							end
-							3'b010: begin // 32 bit
-								busdin <= /*(opcode==`opcode_float_stw) ? frval2 :*/ rval2;
-								buswe <= 4'hf;
-							end
-							default: begin
-								busdin <= 32'd0;
-								buswe <= 4'h0;
-							end
-						endcase
+						buswe <= wstrobe;
 						execstate <= FETCH;
 					end else
 						execstate <= EXEC;
@@ -339,7 +341,7 @@ always @(posedge aclk) begin
 			LOADWAIT: begin
 				if (memready) begin
 					case (func3)
-						3'b000: begin // byte with sign extension
+						`f3_lb: begin // byte with sign extension
 							case (busaddress[1:0])
 								2'b11: begin rdin <= {{24{busdout[31]}}, busdout[31:24]}; end
 								2'b10: begin rdin <= {{24{busdout[23]}}, busdout[23:16]}; end
@@ -347,13 +349,13 @@ always @(posedge aclk) begin
 								2'b00: begin rdin <= {{24{busdout[7]}},  busdout[7:0]}; end
 							endcase
 						end
-						3'b001: begin // word with sign extension
+						`f3_lh: begin // word with sign extension
 							case (busaddress[1])
 								1'b1: begin rdin <= {{16{busdout[31]}}, busdout[31:16]}; end
 								1'b0: begin rdin <= {{16{busdout[15]}}, busdout[15:0]}; end
 							endcase
 						end
-						3'b010: begin // dword
+						`f3_lw: begin // dword
 							/*if (opcode==`opcode_float_ldw) begin
 								frwe <= 1'b1;
 								frdin <= busdout;
@@ -361,7 +363,7 @@ always @(posedge aclk) begin
 								rdin <= busdout;
 							/*end*/
 						end
-						3'b100: begin // byte with zero extension
+						`f3_lbu: begin // byte with zero extension
 							case (busaddress[1:0])
 								2'b11: begin rdin <= {24'd0, busdout[31:24]}; end
 								2'b10: begin rdin <= {24'd0, busdout[23:16]}; end
@@ -369,7 +371,7 @@ always @(posedge aclk) begin
 								2'b00: begin rdin <= {24'd0, busdout[7:0]}; end
 							endcase
 						end
-						/*3'b101*/ default: begin // word with zero extension
+						/*`f3_lhu*/ default: begin // word with zero extension
 							case (busaddress[1])
 								1'b1: begin rdin <= {16'd0, busdout[31:16]}; end
 								1'b0: begin rdin <= {16'd0, busdout[15:0]}; end
