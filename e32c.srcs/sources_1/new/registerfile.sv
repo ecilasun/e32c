@@ -2,9 +2,9 @@
 
 module registerfile(
 	input wire clk,
-	input wire [5:0] rs1,		// Source registers
-	input wire [5:0] rs2,
-	input wire [5:0] rd,		// Destination register
+	input wire [4:0] rs1,		// Source registers
+	input wire [4:0] rs2,
+	input wire [4:0] rd,		// Destination register
 	input wire we,				// Data write enable
 	input wire [31:0] din,		// Data in
 	output wire [31:0] dout1,	// Data out

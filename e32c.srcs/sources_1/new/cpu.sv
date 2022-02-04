@@ -21,9 +21,10 @@ module cpu#(
 logic [31:0] PC = 32'd0;
 logic [31:0] adjacentPC = 32'd0;
 
-logic [5:0] rs1 = 6'd0;
-logic [5:0] rs2 = 6'd0;
-logic [5:0] rd = 6'd0;
+logic [4:0] rs1 = 5'd0;
+logic [4:0] rs2 = 5'd0;
+logic [4:0] rs3 = 5'd0;
+logic [4:0] rd = 5'd0;
 logic [6:0] opcode;
 logic [2:0] func3;
 logic [6:0] func7;
@@ -43,7 +44,7 @@ initial begin
 end
 
 // ----------------------------------------------------------------------------
-// Register file
+// Register files
 // ----------------------------------------------------------------------------
 
 logic rwe = 1'b0;
@@ -59,6 +60,22 @@ registerfile IntRegs(
 	.din(rdin),
 	.dout1(rval1),
 	.dout2(rval2) );
+
+logic frwe = 1'b0;
+logic [31:0] frdin = 32'd0;
+wire [31:0] frval1, frval2, frval3;
+
+floatregisterfile FloatRegs(
+	.clock(aclk),
+	.rs1(rs1),
+	.rs2(rs2),
+	.rs3(rs3),
+	.rd(rd),
+	.wren(frwe),
+	.datain(frdin),
+	.rval1(frval1),
+	.rval2(frval2),
+	.rval3(frval3) );
 
 // ----------------------------------------------------------------------------
 // Instruction Fetch
@@ -117,8 +134,8 @@ wire selector =	(opcode==`opcode_jalr) |
 				(opcode==`opcode_float_stw) |
 				(opcode==`opcode_store);
 
-arithmeticlogicunit alu(
-	.enable(logicen),								// hold high to get a result on next clock
+arithmeticlogicunit ALU(
+	.enable(logicen),							// hold high to get a result on next clock
 	.aluout(aluout),							// result of calculation
 	.func3(func3),								// alu sub-operation code
 	.val1(reqalu ? PC : rval1),					// input value 1
@@ -131,7 +148,7 @@ arithmeticlogicunit alu(
 
 wire branchout;
 
-branchlogicunit blu(
+branchlogicunit BLU(
 	.enable(logicen),
 	.branchout(branchout),	// high when branch should be taken based on op
 	.val1(rval1),			// input value 1
@@ -142,7 +159,7 @@ branchlogicunit blu(
 // Instruction decode
 // ----------------------------------------------------------------------------
 
-typedef enum logic [3:0] {INIT, FETCH, DECODE, LOADWAIT, STORE, IMATHSTALL, WRITESTALL, EXEC} exec_state_type;
+typedef enum logic [3:0] {INIT, FETCH, DECODE, LOADWAIT, STORE, IMATHSTALL, FPUOP, FLOATMATHSTALL, FUSEDMATHSTALL, WRITESTALL, EXEC} exec_state_type;
 exec_state_type execstate;
 
 always_comb begin
@@ -151,6 +168,7 @@ always_comb begin
 	end else begin
 		rs1 = fetchdout[19:15];
 		rs2 = fetchdout[24:20];
+		rs3 = fetchdout[31:27];
 		rd = fetchdout[11:7];
 		opcode = fetchdout[6:0];
 		func3 = fetchdout[14:12];
@@ -294,6 +312,61 @@ signedintegerdivider DivInt(
 // Status
 wire imathbusy = divbusy | divbusyu | mulbusy | mulstrobe | divstrobe | divustrobe;
 
+// ------------------------------------------------------------------------------------
+// Floating point math
+// ------------------------------------------------------------------------------------
+
+logic fmaddstrobe = 1'b0;
+logic fmsubstrobe = 1'b0;
+logic fnmsubstrobe = 1'b0;
+logic fnmaddstrobe = 1'b0;
+logic faddstrobe = 1'b0;
+logic fsubstrobe = 1'b0;
+logic fmulstrobe = 1'b0;
+logic fdivstrobe = 1'b0;
+logic fi2fstrobe = 1'b0;
+logic fui2fstrobe = 1'b0;
+logic ff2istrobe = 1'b0;
+logic ff2uistrobe = 1'b0;
+logic fsqrtstrobe = 1'b0;
+logic feqstrobe = 1'b0;
+logic fltstrobe = 1'b0;
+logic flestrobe = 1'b0;
+
+wire fpuresultvalid;
+wire [31:0] fpuresult;
+
+floatingpointunit FPU(
+	.clock(aclk),
+
+	// inputs
+	.frval1(frval1),
+	.frval2(frval2),
+	.frval3(frval3),
+	.rval1(rval1), // i2f input
+
+	// operation select strobe
+	.fmaddstrobe(fmaddstrobe),
+	.fmsubstrobe(fmsubstrobe),
+	.fnmsubstrobe(fnmsubstrobe),
+	.fnmaddstrobe(fnmaddstrobe),
+	.faddstrobe(faddstrobe),
+	.fsubstrobe(fsubstrobe),
+	.fmulstrobe(fmulstrobe),
+	.fdivstrobe(fdivstrobe),
+	.fi2fstrobe(fi2fstrobe),
+	.fui2fstrobe(fui2fstrobe),
+	.ff2istrobe(ff2istrobe),
+	.ff2uistrobe(ff2uistrobe),
+	.fsqrtstrobe(fsqrtstrobe),
+	.feqstrobe(feqstrobe),
+	.fltstrobe(fltstrobe),
+	.flestrobe(flestrobe),
+
+	// output
+	.resultvalid(fpuresultvalid),
+	.result(fpuresult) );
+
 // ----------------------------------------------------------------------------
 // LOAD/STORE bus address generation / PC extraction / STORE setup
 // ----------------------------------------------------------------------------
@@ -309,7 +382,7 @@ always_comb begin
 		// Memory address to access for load/store
 		busaddress = rval1 + immed;
 
-		if (opcode == `opcode_store) begin
+		if ((opcode == `opcode_store) | (opcode == `opcode_float_stw)) begin
 			// NOTE: We do not need to wait for memready here since the write can happen
 			// by itself, as long as the order of memory operations do not change from our view.
 			case(func3)
@@ -330,7 +403,7 @@ always_comb begin
 					endcase
 				end
 				default /*`f3_sw*/: begin // 32 bit
-					wdin = /*(opcode==`opcode_float_stw) ? frval2 :*/ rval2;
+					wdin = (opcode==`opcode_float_stw) ? frval2 : rval2;
 					wstrobe = 4'hf;
 				end
 			endcase
@@ -347,6 +420,11 @@ wire mulop = (aluop == `alu_mul);
 wire divop = ((aluop == `alu_div) & (func3==`f3_div)) | ((aluop == `alu_rem) & (func3 == `f3_rem));
 wire divuop = ((aluop == `alu_div) & (func3==`f3_divu)) | ((aluop == `alu_rem) & (func3 == `f3_remu));
 
+wire fmaddop = (opcode == `opcode_float_madd);
+wire fmsubop = (opcode == `opcode_float_msub);
+wire fnmsubop = (opcode == `opcode_float_nmsub);
+wire fnmaddop = (opcode == `opcode_float_nmadd);
+
 always @(posedge aclk) begin
 	if (~aresetn) begin
 		//
@@ -359,9 +437,27 @@ always @(posedge aclk) begin
 		buswe <= 4'h0;
 		busre <= 1'b0;
 		rwe <= 1'b0;
+		frwe <= 1'b0;
 		mulstrobe <= 1'b0;
 		divstrobe <= 1'b0;
 		divustrobe <= 1'b0;
+
+		fmaddstrobe <= 1'b0;
+		fmsubstrobe <= 1'b0;
+		fnmsubstrobe <= 1'b0;
+		fnmaddstrobe <= 1'b0;
+		faddstrobe <= 1'b0;
+		fsubstrobe <= 1'b0;
+		fmulstrobe <= 1'b0;
+		fdivstrobe <= 1'b0;
+		fi2fstrobe <= 1'b0;
+		fui2fstrobe <= 1'b0;
+		ff2istrobe <= 1'b0;
+		ff2uistrobe <= 1'b0;
+		fsqrtstrobe <= 1'b0;
+		feqstrobe <= 1'b0;
+		fltstrobe <= 1'b0;
+		flestrobe <= 1'b0;
 
 		case (execstate)
 			INIT: begin
@@ -384,17 +480,106 @@ always @(posedge aclk) begin
 					// Default return address for load/store stall
 					adjacentPC <= PC + 32'd4;
 
-					mulstrobe <= mulop;
-					divstrobe <= divop;
-					divustrobe <= divuop;
-
-					if (opcode == `opcode_load) begin
+					if (fmaddop | fmsubop | fnmsubop | fnmaddop) begin
+						fmaddstrobe <= fmaddop;
+						fmsubstrobe <= fmsubop;
+						fnmsubstrobe <= fnmsubop;
+						fnmaddstrobe <= fnmaddop;
+						execstate <= FUSEDMATHSTALL;
+					end else if (opcode == `opcode_float_op) begin
+						execstate <= FPUOP;
+					end else if ((opcode == `opcode_load) | (opcode == `opcode_float_ldw)) begin
 						busre <= 1'b1;
 						execstate <= LOADWAIT;
-					end else if (opcode == `opcode_store) begin
+					end else if ((opcode == `opcode_store) | (opcode == `opcode_float_stw)) begin
 						execstate <= WRITESTALL;
-					end else
+					end else begin
+						mulstrobe <= mulop;
+						divstrobe <= divop;
+						divustrobe <= divuop;
 						execstate <= (mulop | divop | divuop) ? IMATHSTALL : EXEC;
+					end
+				end
+			end
+
+			FUSEDMATHSTALL: begin
+				if (fpuresultvalid) begin
+					frwe <= 1'b1;
+					frdin <= fpuresult;
+					execstate <= FETCH;
+				end else begin
+					execstate <= FUSEDMATHSTALL;
+				end
+			end
+
+			FPUOP: begin
+				case (func7)
+					`f7_fsgnj: begin
+						frwe <= 1'b1;
+						case(func3)
+							3'b000: frdin <= {frval2[31], frval1[30:0]}; // fsgnj
+							3'b001: frdin <= {~frval2[31], frval1[30:0]}; // fsgnjn
+							3'b010: frdin <= {frval1[31]^frval2[31], frval1[30:0]}; // fsgnjx
+						endcase
+						execstate <= FETCH;
+					end
+					`f7_fmvxw: begin
+						rwe <= 1'b1;
+						if (func3 == 3'b000)
+							rdin <= frval1; // fmvxw
+						else
+							rdin <= 32'd0; // fclass todo: classify the float
+						execstate <= FETCH;
+					end
+					`f7_fmvwx: begin
+						frwe <= 1'b1;
+						frdin <= rval1;
+						execstate <= FETCH;
+					end
+					default: begin
+						faddstrobe <= (func7 == `f7_fadd);
+						fsubstrobe <= (func7 == `f7_fsub);
+						fmulstrobe <= (func7 == `f7_fmul);
+						fdivstrobe <= (func7 == `f7_fdiv);
+						fi2fstrobe <= (func7 == `f7_fcvtsw) & (rs2==5'b00000); // Signed
+						fui2fstrobe <= (func7 == `f7_fcvtsw) & (rs2==5'b00001); // Unsigned
+						ff2istrobe <= (func7 == `f7_fcvtws) & (rs2==5'b00000); // Signed
+						ff2uistrobe <= (func7 == `f7_fcvtws) & (rs2==5'b00001); // Unsigned
+						fsqrtstrobe <= (func7 == `f7_fsqrt);
+						feqstrobe <= (func7==`f7_feq) & (func3==`f3_feq);
+						fltstrobe <= ((func7==`f7_feq) & (func3==`f3_flt)) | (func7==`f7_fmax); // min/max same as flt
+						flestrobe <= (func7==`f7_feq) & (func3==`f3_fle);
+						execstate <= FLOATMATHSTALL;
+					end
+				endcase
+			end
+
+			FLOATMATHSTALL: begin
+				if (fpuresultvalid) begin
+					case (func7)
+						`f7_fcvtws: begin
+							rwe <= 1'b1;
+							rdin <= fpuresult;
+						end
+						`f7_feq: begin
+							rwe <= 1'b1;
+							rdin <= {31'd0, fpuresult[0]};
+						end
+						`f7_fmax: begin
+							frwe <= 1'b1;
+							if (func3==3'b000) // fmin
+								frdin <= fpuresult[0] ? frval1 : frval2;
+							else // fmax
+								frdin <= fpuresult[0] ? frval2 : frval1;
+						end
+						default /*add/sub/mul/div/sqrt/cvtsw*/: begin
+							frwe <= 1'b1;
+							frdin <= fpuresult;
+						end
+					endcase
+					execstate <= FETCH;
+				end else begin
+					execstate <= FLOATMATHSTALL;
 				end
 			end
 
@@ -429,6 +614,8 @@ always @(posedge aclk) begin
 
 			LOADWAIT: begin
 				if (memready) begin
+					rwe <= 1'b0;
+					frwe <= 1'b0;
 					case (func3)
 						`f3_lb: begin // byte with sign extension
 							case (busaddress[1:0])
@@ -437,20 +624,23 @@ always @(posedge aclk) begin
 								2'b01: begin rdin <= {{24{busdout[15]}}, busdout[15:8]}; end
 								2'b00: begin rdin <= {{24{busdout[7]}},  busdout[7:0]}; end
 							endcase
+							rwe <= 1'b1;
 						end
 						`f3_lh: begin // word with sign extension
 							case (busaddress[1])
 								1'b1: begin rdin <= {{16{busdout[31]}}, busdout[31:16]}; end
 								1'b0: begin rdin <= {{16{busdout[15]}}, busdout[15:0]}; end
 							endcase
+							rwe <= 1'b1;
 						end
 						`f3_lw: begin // dword
-							/*if (opcode==`opcode_float_ldw) begin
-								frwe <= 1'b1;
+							if (opcode==`opcode_float_ldw) begin
 								frdin <= busdout;
-							end else begin*/
+								frwe <= 1'b1;
+							end else begin
 								rdin <= busdout;
-							/*end*/
+								rwe <= 1'b1;
+							end
 						end
 						`f3_lbu: begin // byte with zero extension
 							case (busaddress[1:0])
@@ -459,15 +649,16 @@ always @(posedge aclk) begin
 								2'b01: begin rdin <= {24'd0, busdout[15:8]}; end
 								2'b00: begin rdin <= {24'd0, busdout[7:0]}; end
 							endcase
+							rwe <= 1'b1;
 						end
-						/*`f3_lhu*/ default: begin // word with zero extension
+						default /*`f3_lhu*/: begin // word with zero extension
 							case (busaddress[1])
 								1'b1: begin rdin <= {16'd0, busdout[31:16]}; end
 								1'b0: begin rdin <= {16'd0, busdout[15:0]}; end
 							endcase
+							rwe <= 1'b1;
 						end
 					endcase
-					rwe <= 1'b1;
 					execstate <= FETCH;
 				end
 			end

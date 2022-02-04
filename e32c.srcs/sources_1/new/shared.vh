@@ -143,6 +143,11 @@
 `define f3_sh		3'b001
 `define f3_sw		3'b010
 
+// Float compare type
+`define f3_feq		3'b010
+`define f3_flt		3'b001
+`define f3_fle		3'b000
+
 // Floating point math
 `define f7_fadd        7'b0000000
 `define f7_fsub        7'b0000100
