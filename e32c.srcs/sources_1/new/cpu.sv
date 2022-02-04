@@ -248,9 +248,6 @@ end
 // Integer math (mul/div)
 // -----------------------------------------------------------------------
 
-logic [31:0] mout = 32'd0;
-logic mwrite = 1'b0;
-
 wire mulbusy, divbusy, divbusyu;
 wire [31:0] product;
 wire [31:0] quotient;
@@ -362,7 +359,6 @@ always @(posedge aclk) begin
 		buswe <= 4'h0;
 		busre <= 1'b0;
 		rwe <= 1'b0;
-		mwrite <= 1'b0;
 		mulstrobe <= 1'b0;
 		divstrobe <= 1'b0;
 		divustrobe <= 1'b0;
@@ -415,17 +411,17 @@ always @(posedge aclk) begin
 				if (~imathbusy) begin
 					case (aluop)
 						`alu_div: begin
-							mout <= (func3==`f3_div) ? quotient : quotientu;
+							rdin <= (func3==`f3_div) ? quotient : quotientu;
 						end
 						`alu_rem: begin
-							mout <= (func3==`f3_rem) ? remainder : remainderu;
+							rdin <= (func3==`f3_rem) ? remainder : remainderu;
 						end
 						default /*`alu_mul*/: begin
-							mout <= product;
+							rdin <= product;
 						end
 					endcase
-					mwrite <= 1'b1;
-					execstate <= EXEC;
+					rwe <= 1'b1;
+					execstate <= FETCH;
 				end else begin
 					execstate <= IMATHSTALL;
 				end
@@ -481,8 +477,7 @@ always @(posedge aclk) begin
 				case (opcode)
 					`opcode_lui: rdin <= immed;
 					`opcode_jal, `opcode_jalr, `opcode_branch: rdin <= adjacentPC;
-					`opcode_op: rdin <= mwrite ? mout : aluout;
-					`opcode_op_imm, `opcode_auipc: rdin <= aluout;
+					`opcode_op, `opcode_op_imm, `opcode_auipc: rdin <= aluout;
 					/*`opcode_system: rdin <= csrval; // TODO: more here
 					*/
 				endcase
