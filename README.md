@@ -2,7 +2,8 @@
 This is a pipelined version of the E32 RISC-V system, with a very shallow pipeline depth.
 Current version has only two pipeline stages; FETCH(+STORE+LOAD) and EXECUTE(+DECODE+WBACK).
 
-This implementation is as simple as possible, and conforms to the RV32I model of RISC-V ISA.
+This implementation is as simple as possible, and conforms to the RV32IM model of RISC-V ISA
+(That is, it supports base 32 bit instruction set, and has hardware integer mul/div/rem operations)
 
 At this time, this system has good timing closure at 160MHz base clock speed (CPU+Bus on same clock).
 In the future this will be changed to set up the bus at a different speed than the rest of the system.
@@ -10,7 +11,7 @@ In the future this will be changed to set up the bus at a different speed than t
 # FETCH unit
 The FETCH unit is a self-stalling stage. It will repeatedly read instructions starting from the
 reset vector, until it sees a branch, jump, load instruction, after which it will go
-to a STALL mode. Store instructions will overlap with loads/instruction fetches thanks to the
+to a STALL mode. Store instructions will overlap with instruction fetches thanks to the
 nature of the axi4lite bus having separate read/write lines, and won't stall the FETCH unit.
 
 In this mode, FETCH unit will wait for either a read or write flag to be set, or the new program
