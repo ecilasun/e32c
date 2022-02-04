@@ -5,7 +5,7 @@ Current version has only two pipeline stages; FETCH(+STORE+LOAD) and EXECUTE(+DE
 This implementation is as simple as possible, and conforms to the RV32IM model of RISC-V ISA
 (That is, it supports base 32 bit instruction set, and has hardware integer mul/div/rem operations)
 
-At this time, this system has good timing closure at 160MHz base clock speed (CPU+Bus on same clock).
+At this time, this system has good timing closure at 140MHz base clock speed (CPU+Bus on same clock).
 In the future this will be changed to set up the bus at a different speed than the rest of the system.
 
 # FETCH unit
