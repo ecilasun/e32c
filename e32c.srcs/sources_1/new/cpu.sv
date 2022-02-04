@@ -69,7 +69,7 @@ logic bresume = 1'b0;
 logic fetchre = 1'b0;
 wire fetchempty, fetchvalid;
 wire [63:0] fetchdout;
-wire memready;
+wire memready, writeready;
 
 logic [31:0] busaddress = 32'd0;
 logic [31:0] busdin = 32'd0;
@@ -95,7 +95,8 @@ fetchunit #(
 	.busre(busre),
 	.busdin(busdin),
 	.busdout(busdout),
-	.memready(memready) );
+	.memready(memready),
+	.writeready(writeready) );
 
 // ----------------------------------------------------------------------------
 // ALU
@@ -141,7 +142,7 @@ branchlogicunit blu(
 // Instruction decode
 // ----------------------------------------------------------------------------
 
-typedef enum logic [3:0] {INIT, FETCH, DECODE, LOADWAIT, STORE, EXEC} exec_state_type;
+typedef enum logic [3:0] {INIT, FETCH, DECODE, LOADWAIT, STORE, IMATHSTALL, WRITESTALL, EXEC} exec_state_type;
 exec_state_type execstate;
 
 always_comb begin
@@ -243,11 +244,65 @@ always_comb begin
 	end
 end
 
+// -----------------------------------------------------------------------
+// Integer math (mul/div)
+// -----------------------------------------------------------------------
+
+logic [31:0] mout = 32'd0;
+logic mwrite = 1'b0;
+
+wire mulbusy, divbusy, divbusyu;
+wire [31:0] product;
+wire [31:0] quotient;
+wire [31:0] quotientu;
+wire [31:0] remainder;
+wire [31:0] remainderu;
+
+logic mulstrobe = 1'b0;
+logic divstrobe = 1'b0;
+logic divustrobe = 1'b0;
+
+singedunsignedmultiplier MulIntUInt(
+    .clk(aclk),
+    .resetn(aresetn),
+    .start(mulstrobe),
+    .busy(mulbusy),          // calculation in progress
+    .func3(func3),
+    .multiplicand(rval1),
+    .multiplier(rval2),
+    .product(product) );
+
+unsignedintegerdivider DivUInt(
+	.clk(aclk),
+	.resetn(aresetn),
+	.start(divustrobe),		// start signal
+	.busy(divbusyu),		// calculation in progress
+	.dividend(rval1),		// dividend
+	.divisor(rval2),		// divisor
+	.quotient(quotientu),	// result: quotient
+	.remainder(remainderu)	// result: remainer
+);
+
+signedintegerdivider DivInt(
+	.clk(aclk),
+	.resetn(aresetn),
+	.start(divstrobe),		// start signal
+	.busy(divbusy),			// calculation in progress
+	.dividend(rval1),		// dividend
+	.divisor(rval2),		// divisor
+	.quotient(quotient),	// result: quotient
+	.remainder(remainder)	// result: remainder
+);
+
+// Status
+wire imathbusy = divbusy | divbusyu | mulbusy | mulstrobe | divstrobe | divustrobe;
+
 // ----------------------------------------------------------------------------
-// Instruction execute
+// LOAD/STORE bus address generation / PC extraction / STORE setup
 // ----------------------------------------------------------------------------
 
 logic [3:0] wstrobe = 4'h0;
+logic [31:0] wdin = 32'd0;
 always_comb begin
 	if (fetchvalid) begin
 
@@ -262,7 +317,7 @@ always_comb begin
 			// by itself, as long as the order of memory operations do not change from our view.
 			case(func3)
 				`f3_sb: begin // 8 bit
-					busdin = {rval2[7:0], rval2[7:0], rval2[7:0], rval2[7:0]};
+					wdin = {rval2[7:0], rval2[7:0], rval2[7:0], rval2[7:0]};
 					case (busaddress[1:0])
 						2'b11: wstrobe = 4'h8;
 						2'b10: wstrobe = 4'h4;
@@ -271,14 +326,14 @@ always_comb begin
 					endcase
 				end
 				`f3_sh: begin // 16 bit
-					busdin = {rval2[15:0], rval2[15:0]};
+					wdin = {rval2[15:0], rval2[15:0]};
 					case (busaddress[1])
 						1'b1: wstrobe = 4'hc;
 						1'b0: wstrobe = 4'h3;
 					endcase
 				end
 				default /*`f3_sw*/: begin // 32 bit
-					busdin = /*(opcode==`opcode_float_stw) ? frval2 :*/ rval2;
+					wdin = /*(opcode==`opcode_float_stw) ? frval2 :*/ rval2;
 					wstrobe = 4'hf;
 				end
 			endcase
@@ -287,7 +342,13 @@ always_comb begin
 	end
 end
 
-logic [4:0] delaycount = 5'd0;
+// ----------------------------------------------------------------------------
+// Instruction execute
+// ----------------------------------------------------------------------------
+
+wire mulop = (aluop == `alu_mul);
+wire divop = ((aluop == `alu_div) & (func3==`f3_div)) | ((aluop == `alu_rem) & (func3 == `f3_rem));
+wire divuop = ((aluop == `alu_div) & (func3==`f3_divu)) | ((aluop == `alu_rem) & (func3 == `f3_remu));
 
 always @(posedge aclk) begin
 	if (~aresetn) begin
@@ -301,14 +362,14 @@ always @(posedge aclk) begin
 		buswe <= 4'h0;
 		busre <= 1'b0;
 		rwe <= 1'b0;
+		mwrite <= 1'b0;
+		mulstrobe <= 1'b0;
+		divstrobe <= 1'b0;
+		divustrobe <= 1'b0;
 
 		case (execstate)
 			INIT: begin
-				delaycount <= delaycount + 5'd1;
-				if (delaycount == 5'd31)
-					execstate <= FETCH;
-				else
-					execstate <= INIT ;
+				execstate <= FETCH;
 			end
 
 			FETCH: begin
@@ -327,14 +388,46 @@ always @(posedge aclk) begin
 					// Default return address for load/store stall
 					adjacentPC <= PC + 32'd4;
 
+					mulstrobe <= mulop;
+					divstrobe <= divop;
+					divustrobe <= divuop;
+
 					if (opcode == `opcode_load) begin
 						busre <= 1'b1;
 						execstate <= LOADWAIT;
 					end else if (opcode == `opcode_store) begin
-						buswe <= wstrobe;
-						execstate <= FETCH;
+						execstate <= WRITESTALL;
 					end else
-						execstate <= EXEC;
+						execstate <= (mulop | divop | divuop) ? IMATHSTALL : EXEC;
+				end
+			end
+
+			WRITESTALL: begin
+				if (writeready) begin
+					busdin <= wdin;
+					buswe <= wstrobe;
+					execstate <= FETCH;
+				end else
+					execstate <= WRITESTALL;
+			end
+
+			IMATHSTALL: begin
+				if (~imathbusy) begin
+					case (aluop)
+						`alu_div: begin
+							mout <= (func3==`f3_div) ? quotient : quotientu;
+						end
+						`alu_rem: begin
+							mout <= (func3==`f3_rem) ? remainder : remainderu;
+						end
+						default /*`alu_mul*/: begin
+							mout <= product;
+						end
+					endcase
+					mwrite <= 1'b1;
+					execstate <= EXEC;
+				end else begin
+					execstate <= IMATHSTALL;
 				end
 			end
 
@@ -383,12 +476,13 @@ always @(posedge aclk) begin
 				end
 			end
 
-			EXEC: begin
+			default /*EXEC*/: begin
 				// Execute
 				case (opcode)
 					`opcode_lui: rdin <= immed;
 					`opcode_jal, `opcode_jalr, `opcode_branch: rdin <= adjacentPC;
-					`opcode_op, `opcode_op_imm, `opcode_auipc: rdin <= /*mwrite ? mout :*/ aluout;
+					`opcode_op: rdin <= mwrite ? mout : aluout;
+					`opcode_op_imm, `opcode_auipc: rdin <= aluout;
 					/*`opcode_system: rdin <= csrval; // TODO: more here
 					*/
 				endcase

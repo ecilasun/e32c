@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="7,558.433 ns"></ZoomStartTime>
-      <ZoomEndTime time="14,828.434 ns"></ZoomEndTime>
-      <Cursor1Time time="9,028.433 ns"></Cursor1Time>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="112.650001 us"></ZoomEndTime>
+      <Cursor1Time time="7.600000 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="169"></NameColumnWidth>
+      <NameColumnWidth column_width="195"></NameColumnWidth>
       <ValueColumnWidth column_width="88"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="61" />
+   <WVObjectSize size="104" />
    <wvobject type="divider" fp_name="divider149">
       <obj_property name="label">Top</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -238,10 +238,6 @@
       <obj_property name="CustomSignalColor">#FF0000</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/delaycount" type="array">
-      <obj_property name="ElementShortName">delaycount[4:0]</obj_property>
-      <obj_property name="ObjectShortName">delaycount[4:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/busaddress" type="array">
       <obj_property name="ElementShortName">busaddress[31:0]</obj_property>
       <obj_property name="ObjectShortName">busaddress[31:0]</obj_property>
@@ -285,5 +281,193 @@
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/immed" type="array">
       <obj_property name="ElementShortName">immed[31:0]</obj_property>
       <obj_property name="ObjectShortName">immed[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/imathbusy" type="logic">
+      <obj_property name="ElementShortName">imathbusy</obj_property>
+      <obj_property name="ObjectShortName">imathbusy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/mwrite" type="logic">
+      <obj_property name="ElementShortName">mwrite</obj_property>
+      <obj_property name="ObjectShortName">mwrite</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/mout" type="array">
+      <obj_property name="ElementShortName">mout[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mout[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/mulop" type="logic">
+      <obj_property name="ElementShortName">mulop</obj_property>
+      <obj_property name="ObjectShortName">mulop</obj_property>
+      <obj_property name="CustomSignalColor">#D2691E</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/divop" type="logic">
+      <obj_property name="ElementShortName">divop</obj_property>
+      <obj_property name="ObjectShortName">divop</obj_property>
+      <obj_property name="CustomSignalColor">#D2691E</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/divuop" type="logic">
+      <obj_property name="ElementShortName">divuop</obj_property>
+      <obj_property name="ObjectShortName">divuop</obj_property>
+      <obj_property name="CustomSignalColor">#D2691E</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider367">
+      <obj_property name="label">div</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivInt/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivInt/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivInt/dividend" type="array">
+      <obj_property name="ElementShortName">dividend[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dividend[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivInt/divisor" type="array">
+      <obj_property name="ElementShortName">divisor[31:0]</obj_property>
+      <obj_property name="ObjectShortName">divisor[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivInt/quotient" type="array">
+      <obj_property name="ElementShortName">quotient[31:0]</obj_property>
+      <obj_property name="ObjectShortName">quotient[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivInt/remainder" type="array">
+      <obj_property name="ElementShortName">remainder[31:0]</obj_property>
+      <obj_property name="ObjectShortName">remainder[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivInt/count" type="array">
+      <obj_property name="ElementShortName">count[5:0]</obj_property>
+      <obj_property name="ObjectShortName">count[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivInt/reg_q" type="array">
+      <obj_property name="ElementShortName">reg_q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_q[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivInt/reg_r" type="array">
+      <obj_property name="ElementShortName">reg_r[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_r[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivInt/reg_b" type="array">
+      <obj_property name="ElementShortName">reg_b[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_b[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivInt/reg_r2" type="array">
+      <obj_property name="ElementShortName">reg_r2[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_r2[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivInt/r_sign" type="logic">
+      <obj_property name="ElementShortName">r_sign</obj_property>
+      <obj_property name="ObjectShortName">r_sign</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivInt/sub_add" type="array">
+      <obj_property name="ElementShortName">sub_add[32:0]</obj_property>
+      <obj_property name="ObjectShortName">sub_add[32:0]</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider383">
+      <obj_property name="label">divu</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivUInt/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivUInt/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivUInt/dividend" type="array">
+      <obj_property name="ElementShortName">dividend[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dividend[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivUInt/divisor" type="array">
+      <obj_property name="ElementShortName">divisor[31:0]</obj_property>
+      <obj_property name="ObjectShortName">divisor[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivUInt/quotient" type="array">
+      <obj_property name="ElementShortName">quotient[31:0]</obj_property>
+      <obj_property name="ObjectShortName">quotient[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivUInt/remainder" type="array">
+      <obj_property name="ElementShortName">remainder[31:0]</obj_property>
+      <obj_property name="ObjectShortName">remainder[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivUInt/count" type="array">
+      <obj_property name="ElementShortName">count[5:0]</obj_property>
+      <obj_property name="ObjectShortName">count[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivUInt/reg_q" type="array">
+      <obj_property name="ElementShortName">reg_q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_q[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivUInt/reg_r" type="array">
+      <obj_property name="ElementShortName">reg_r[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_r[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivUInt/reg_b" type="array">
+      <obj_property name="ElementShortName">reg_b[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_b[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivUInt/r_sign" type="logic">
+      <obj_property name="ElementShortName">r_sign</obj_property>
+      <obj_property name="ObjectShortName">r_sign</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/DivUInt/sub_add" type="array">
+      <obj_property name="ElementShortName">sub_add[32:0]</obj_property>
+      <obj_property name="ObjectShortName">sub_add[32:0]</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider398">
+      <obj_property name="label">mul</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/MulIntUInt/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/MulIntUInt/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/MulIntUInt/func3" type="array">
+      <obj_property name="ElementShortName">func3[2:0]</obj_property>
+      <obj_property name="ObjectShortName">func3[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/MulIntUInt/multiplicand" type="array">
+      <obj_property name="ElementShortName">multiplicand[31:0]</obj_property>
+      <obj_property name="ObjectShortName">multiplicand[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/MulIntUInt/multiplier" type="array">
+      <obj_property name="ElementShortName">multiplier[31:0]</obj_property>
+      <obj_property name="ObjectShortName">multiplier[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/MulIntUInt/product" type="array">
+      <obj_property name="ElementShortName">product[31:0]</obj_property>
+      <obj_property name="ObjectShortName">product[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/MulIntUInt/a" type="array">
+      <obj_property name="ElementShortName">a[32:0]</obj_property>
+      <obj_property name="ObjectShortName">a[32:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/MulIntUInt/b" type="array">
+      <obj_property name="ElementShortName">b[32:0]</obj_property>
+      <obj_property name="ObjectShortName">b[32:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/MulIntUInt/n" type="array">
+      <obj_property name="ElementShortName">n[3:0]</obj_property>
+      <obj_property name="ObjectShortName">n[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/MulIntUInt/dspproduct" type="array">
+      <obj_property name="ElementShortName">dspproduct[65:0]</obj_property>
+      <obj_property name="ObjectShortName">dspproduct[65:0]</obj_property>
    </wvobject>
 </wave_config>

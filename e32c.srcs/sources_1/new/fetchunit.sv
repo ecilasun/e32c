@@ -25,7 +25,8 @@ module fetchunit#(
 	input wire busre,
 	input wire [31:0] busdin,
 	output logic [31:0] busdout = 32'd0,
-	output logic memready = 1'b0 );
+	output logic memready = 1'b0,
+	output logic writeready = 1'b1);
 
 // ----------------------------------------------------------------------------
 // Fetch FIFO
@@ -50,7 +51,7 @@ fetchoutfifo FetchUnitOut(
 // Main state machine
 // ----------------------------------------------------------------------------
 
-typedef enum logic [3:0] {INIT, FETCH, STALL, READWAIT, MEMREAD, MEMWRITE} fetch_state_type;
+typedef enum logic [3:0] {INIT, FETCH, STALL, READWAIT, MEMREAD} fetch_state_type;
 fetch_state_type fetchstate;
 
 logic [31:0] PC = RESETVECTOR;
@@ -66,6 +67,7 @@ always_ff @(posedge aclk) begin
 	end else begin
 		if (|buswe) begin
 			// Write requested
+			writeready <= 1'b0;
 			axi4if.awaddr <= busaddress;
 			axi4if.awvalid <= 1'b1;
 			axi4if.wvalid <= 1'b1;
@@ -83,6 +85,7 @@ always_ff @(posedge aclk) begin
 			end
 			if (axi4if.bvalid) begin
 				axi4if.bready <= 1'b0;
+				writeready <= 1'b1;
 			end
 		end
 	end
