@@ -169,7 +169,7 @@ always_ff @(posedge aclk) begin
 				end
 			end
 
-			MEMREAD: begin
+			default /*MEMREAD*/: begin
 				if (axi4if.arready) begin
 					axi4if.arvalid <= 1'b0;
 				end
