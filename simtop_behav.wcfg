@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
-      <ZoomEndTime time="112.650001 us"></ZoomEndTime>
-      <Cursor1Time time="7.600000 us"></Cursor1Time>
+      <ZoomStartTime time="8,089.766 ns"></ZoomStartTime>
+      <ZoomEndTime time="8,541.567 ns"></ZoomEndTime>
+      <Cursor1Time time="8,208.333 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="195"></NameColumnWidth>
+      <NameColumnWidth column_width="189"></NameColumnWidth>
       <ValueColumnWidth column_width="88"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="104" />
+   <WVObjectSize size="102" />
    <wvobject type="divider" fp_name="divider149">
       <obj_property name="label">Top</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -142,13 +142,13 @@
       <obj_property name="ElementShortName">resumeaddress[31:0]</obj_property>
       <obj_property name="ObjectShortName">resumeaddress[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchre" type="logic">
-      <obj_property name="ElementShortName">fetchre</obj_property>
-      <obj_property name="ObjectShortName">fetchre</obj_property>
-   </wvobject>
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchempty" type="logic">
       <obj_property name="ElementShortName">fetchempty</obj_property>
       <obj_property name="ObjectShortName">fetchempty</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchre" type="logic">
+      <obj_property name="ElementShortName">fetchre</obj_property>
+      <obj_property name="ObjectShortName">fetchre</obj_property>
    </wvobject>
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/IFETCHLOADSTORE/fetchvalid" type="logic">
       <obj_property name="ElementShortName">fetchvalid</obj_property>
@@ -263,12 +263,12 @@
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/rs1" type="array">
-      <obj_property name="ElementShortName">rs1[5:0]</obj_property>
-      <obj_property name="ObjectShortName">rs1[5:0]</obj_property>
+      <obj_property name="ElementShortName">rs1[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rs1[4:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/rs2" type="array">
-      <obj_property name="ElementShortName">rs2[5:0]</obj_property>
-      <obj_property name="ObjectShortName">rs2[5:0]</obj_property>
+      <obj_property name="ElementShortName">rs2[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rs2[4:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/rval1" type="array">
       <obj_property name="ElementShortName">rval1[31:0]</obj_property>
@@ -285,14 +285,6 @@
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/imathbusy" type="logic">
       <obj_property name="ElementShortName">imathbusy</obj_property>
       <obj_property name="ObjectShortName">imathbusy</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/mwrite" type="logic">
-      <obj_property name="ElementShortName">mwrite</obj_property>
-      <obj_property name="ObjectShortName">mwrite</obj_property>
-   </wvobject>
-   <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/mout" type="array">
-      <obj_property name="ElementShortName">mout[31:0]</obj_property>
-      <obj_property name="ObjectShortName">mout[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/simtop/topinst/DECODEEXECWBACK/mulop" type="logic">
       <obj_property name="ElementShortName">mulop</obj_property>

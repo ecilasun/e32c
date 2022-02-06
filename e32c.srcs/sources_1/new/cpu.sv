@@ -36,11 +36,14 @@ logic [2:0] bluop = `blu_none;
 // Register flags
 // ----------------------------------------------------------------------------
 
+// WRITEPENDING  READPENDING
+//            0            0
 logic [1:0] regflags[0:31];
+
 initial begin
 	int i;
-	for (i=0;i<32;i=i+1)
-		regflags[i] <= 2'b00; // Register available for r/w by default
+	for (i=0; i<32; i=i+1)
+		regflags[i] <= 2'b00;
 end
 
 // ----------------------------------------------------------------------------
@@ -374,41 +377,59 @@ floatingpointunit FPU(
 logic [3:0] wstrobe = 4'h0;
 logic [31:0] wdin = 32'd0;
 always_comb begin
-	if (fetchvalid) begin
-
-		// To be used for relative addressing or to calculate new branch offset
-		PC = fetchdout[63:32];
-
-		// Memory address to access for load/store
-		busaddress = rval1 + immed;
-
-		if ((opcode == `opcode_store) | (opcode == `opcode_float_stw)) begin
-			// NOTE: We do not need to wait for memready here since the write can happen
-			// by itself, as long as the order of memory operations do not change from our view.
-			case(func3)
-				`f3_sb: begin // 8 bit
-					wdin = {rval2[7:0], rval2[7:0], rval2[7:0], rval2[7:0]};
-					case (busaddress[1:0])
-						2'b11: wstrobe = 4'h8;
-						2'b10: wstrobe = 4'h4;
-						2'b01: wstrobe = 4'h2;
-						2'b00: wstrobe = 4'h1;
-					endcase
+	if (~aresetn) begin
+		// 
+	end else begin
+		case(execstate)
+			FETCH: begin
+				if (~fetchempty) begin
+					fetchre = 1'b1;
 				end
-				`f3_sh: begin // 16 bit
-					wdin = {rval2[15:0], rval2[15:0]};
-					case (busaddress[1])
-						1'b1: wstrobe = 4'hc;
-						1'b0: wstrobe = 4'h3;
-					endcase
-				end
-				default /*`f3_sw*/: begin // 32 bit
-					wdin = (opcode==`opcode_float_stw) ? frval2 : rval2;
-					wstrobe = 4'hf;
-				end
-			endcase
-		end
+			end
 
+			DECODE: begin
+				fetchre = 1'b0;
+				if (fetchvalid) begin
+					// To be used for relative addressing or to calculate new branch offset
+					PC = fetchdout[63:32];
+			
+					// Memory address to access for load/store
+					busaddress = rval1 + immed;
+	
+					if ((opcode == `opcode_store) | (opcode == `opcode_float_stw)) begin
+						// NOTE: We do not need to wait for memready here since the write can happen
+						// by itself, as long as the order of memory operations do not change from our view.
+						case(func3)
+							`f3_sb: begin // 8 bit
+								wdin = {rval2[7:0], rval2[7:0], rval2[7:0], rval2[7:0]};
+								case (busaddress[1:0])
+									2'b11: wstrobe = 4'h8;
+									2'b10: wstrobe = 4'h4;
+									2'b01: wstrobe = 4'h2;
+									2'b00: wstrobe = 4'h1;
+								endcase
+							end
+							`f3_sh: begin // 16 bit
+								wdin = {rval2[15:0], rval2[15:0]};
+								case (busaddress[1])
+									1'b1: wstrobe = 4'hc;
+									1'b0: wstrobe = 4'h3;
+								endcase
+							end
+							default /*`f3_sw*/: begin // 32 bit
+								wdin = (opcode==`opcode_float_stw) ? frval2 : rval2;
+								wstrobe = 4'hf;
+							end
+						endcase
+					end
+				end
+			end
+
+			default: begin
+				fetchre = 1'b0;
+			end
+
+		endcase
 	end
 end
 
@@ -430,8 +451,6 @@ always @(posedge aclk) begin
 		//
 		execstate <= INIT;
 	end else begin
-
-		fetchre <= 1'b0;
 		bresume <= 1'b0;
 		logicen <= 1'b0;
 		buswe <= 4'h0;
@@ -467,7 +486,6 @@ always @(posedge aclk) begin
 			FETCH: begin
 				// Pull
 				if (~fetchempty) begin
-					fetchre <= 1'b1;
 					execstate <= DECODE;
 				end
 			end
