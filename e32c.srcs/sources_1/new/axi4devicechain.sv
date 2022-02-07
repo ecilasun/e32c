@@ -85,11 +85,11 @@ axi4ps2keyboard ps2keyboard(
 // fpu @20003000
 /*wire validwaddr_fpu = axi4if.awaddr>=32'h20003000 && axi4if.awaddr<32'h20004000;
 wire validraddr_fpu = axi4if.araddr>=32'h20003000 && axi4if.araddr<32'h20004000;
-axi4lite fpuif(axi4if.aclk, axi4if.aresetn);
+axi4lite fpuif();
 axi4fpu floatingpointunit(
-	.axi4if(fpuif),
-	.clocks(clocks),
-	.wires(wires) );*/
+	.aclk(aclk),
+	.aresetn(aresetn),
+	.axi4if(fpuif) );*/
 
 // buttons @20004000
 /*wire validwaddr_button = axi4if.awaddr>=32'h20004000 && axi4if.awaddr<32'h20005000;
