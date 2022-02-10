@@ -21,7 +21,7 @@ wire fpuresultvalid;
 wire [31:0] fpuresult;
 
 floatingpointunit axi4fpudevice(
-	.clock(axi4if.aclk),
+	.clock(aclk),
 
 	// inputs
 	.frval1(frval1),
@@ -105,34 +105,49 @@ always @(posedge aclk) begin
 	end
 end
 
+logic [2:0] writeslot = 3'd0;
+
 always @(posedge aclk) begin
 	if (~aresetn) begin
-		//
+		axi4if.wready <= 1'b0;
+		axi4if.bvalid <= 1'b0;
+		axi4if.bresp = 2'b00; // Input OK
 	end else begin
 		strobe <= 16'd0;
 	
 		case (writestate)
 			2'b00: begin
 				if (axi4if.wvalid /*& cansend*/) begin
-					// Load data into registers and kick
-					// the operation once address ...10 is written to
-					case (axi4if.awaddr[7:0])
-						8'h00: frval1 <= axi4if.wdata;
-						8'h04: frval2 <= axi4if.wdata;
-						8'h08: frval3 <= axi4if.wdata;
-						8'h0C: rval1 <= axi4if.wdata;
-						8'h10: strobe <= axi4if.wdata[15:0];
-					endcase
+					// After address is written, expect to read a 5x32 burst of data
+					writeslot <= 3'd0;
+					//if(axi4if.bready) begin
+					frval1 <= axi4if.wdata;
 					axi4if.wready <= 1'b1;
-					writestate <= 2'b01;
+					writestate <= 2'b01; //end
 				end
 			end
 			2'b01: begin
-				axi4if.wready <= 1'b0;
+				axi4if.wready <= 1'b1;
 				if(axi4if.bready) begin
-					axi4if.bvalid <= 1'b1;
-					axi4if.bresp = 2'b00; // okay
-					writestate <= 2'b10;
+					// This unit expects a burst write
+					case (writeslot)
+						3'd0: frval2 <= axi4if.wdata;
+						3'd1: frval3 <= axi4if.wdata;
+						3'd2: rval1 <= axi4if.wdata;
+						default /*3'd4*/: strobe <= axi4if.wdata[15:0];// Operation to execute
+					endcase
+					// Is this the last entry in the write burst?
+					if (~axi4if.wlast) begin
+						// Increment write slot and wait for more
+						writeslot <= writeslot + 3'd1;
+						// Done accepting burst data
+						axi4if.wready <= 1'b0;
+					end else begin
+						// Last entry, we're done for now
+						axi4if.bvalid <= 1'b1;
+						//axi4if.bresp = 2'b00; // Input OK
+						writestate <= 2'b10;
+					end
 				end
 			end
 			default/*2'b10*/: begin
@@ -150,7 +165,7 @@ always @(posedge aclk) begin
 		axi4if.rresp <= 2'b00;
 		axi4if.rdata <= 32'd0;
 	end else begin
-	
+
 		fpufifore <= 1'b0;
 
 		// read address
