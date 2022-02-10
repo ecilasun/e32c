@@ -5,6 +5,7 @@ module topmodule(
 	output wire uart_rxd_out,
 	input wire uart_txd_in );
 
+// Clock and reset
 wire baseclock, wallclock, uartbaseclock;
 wire resetn;
 clockandresetgen ClkGen(
@@ -14,15 +15,23 @@ clockandresetgen ClkGen(
 	.uartbaseclock(uartbaseclock),
 	.selfresetn(resetn) );
 
+// Signal sync
+wire uart_txd_sync;
+sync_signal #(.WIDTH(1), .N(2)) SignalSync (
+    .clk(uartbaseclock),
+    .in(uart_txd_in),
+    .out(uart_txd_sync) );
+
 // Bus interface
 axi4lite busif();
 
+// Device chain
 axi4devicechain DeviceChain(
 	.aclk(baseclock),
 	.aresetn(resetn),
 	.uartbaseclock(uartbaseclock),
 	.uart_rxd_out(uart_rxd_out),
-	.uart_txd_in(uart_txd_in),
+	.uart_txd_in(uart_txd_sync),
 	.axi4if(busif) );
 
 // CPU

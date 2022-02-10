@@ -378,17 +378,10 @@ logic [3:0] wstrobe = 4'h0;
 logic [31:0] wdin = 32'd0;
 always_comb begin
 	if (~aresetn) begin
-		// 
+		//
 	end else begin
 		case(execstate)
-			FETCH: begin
-				if (~fetchempty) begin
-					fetchre = 1'b1;
-				end
-			end
-
 			DECODE: begin
-				fetchre = 1'b0;
 				if (fetchvalid) begin
 					// To be used for relative addressing or to calculate new branch offset
 					PC = fetchdout[63:32];
@@ -426,7 +419,7 @@ always_comb begin
 			end
 
 			default: begin
-				fetchre = 1'b0;
+				//
 			end
 
 		endcase
@@ -478,6 +471,8 @@ always @(posedge aclk) begin
 		fltstrobe <= 1'b0;
 		flestrobe <= 1'b0;
 
+		fetchre <= 1'b0;
+
 		case (execstate)
 			INIT: begin
 				execstate <= FETCH;
@@ -486,6 +481,7 @@ always @(posedge aclk) begin
 			FETCH: begin
 				// Pull
 				if (~fetchempty) begin
+					fetchre <= 1'b1;
 					execstate <= DECODE;
 				end
 			end
